@@ -25,7 +25,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Icons } from '../icons';
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar';
 import { Badge } from '../ui/badge';
 
@@ -48,7 +47,7 @@ export function AppHeader() {
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Icons.JanjiSuciLogo className="h-6 w-auto" />
+            <span className="font-headline text-lg font-bold">Janji Suci</span>
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             {navLinks.map((link) => (
@@ -75,10 +74,9 @@ export function AppHeader() {
             <nav className="grid gap-6 text-lg font-medium">
               <Link
                 href="#"
-                className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
+                className="group flex h-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
               >
-                <Icons.JanjiSuciLogo className="h-5 w-5 transition-all group-hover:scale-110" />
-                <span className="sr-only">Janji Suci</span>
+                <span className="font-headline text-lg font-bold">Janji Suci</span>
               </Link>
               {navLinks.map((link) => (
               <Link
