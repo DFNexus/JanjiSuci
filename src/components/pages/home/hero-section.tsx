@@ -22,7 +22,7 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20" />
       <div className="relative z-10 container flex flex-col items-center gap-6">
         <h1 className="text-4xl md:text-6xl font-headline font-bold drop-shadow-lg">
-          Wujudkan Pernikahan Impian Anda di Jawa
+          Wujudkan Pernikahan Impian Anda
         </h1>
         <p className="max-w-2xl text-lg md:text-xl text-slate-200 drop-shadow-md">
           Dari Impian Menjadi Kenyataan
