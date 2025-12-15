@@ -1,3 +1,130 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "promo-1",
+      "description": "A beautiful wedding setup with flowers.",
+      "imageUrl": "https://images.unsplash.com/photo-1523438885200-e635ba2c371e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3ZWRkaW5nJTIwZGVjb3JhdGlvbnxlbnwwfHx8fDE3NjU3ODc1OTB8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding decoration"
+    },
+    {
+      "id": "promo-2",
+      "description": "A close-up of a wedding cake.",
+      "imageUrl": "https://images.unsplash.com/photo-1535254973040-607b474cb50d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3ZWRkaW5nJTIwY2FrZXxlbnwwfHx8fDE3NjU3NTUyMDd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding cake"
+    },
+    {
+      "id": "promo-3",
+      "description": "A couple on their wedding day.",
+      "imageUrl": "https://images.unsplash.com/photo-1591604466107-ec97de577aff?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3ZWRkaW5nJTIwY291cGxlfGVufDB8fHx8MTc2NTgwNjg2N3ww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding couple"
+    },
+    {
+      "id": "category-venue",
+      "description": "An elegant wedding venue.",
+      "imageUrl": "https://images.unsplash.com/photo-1510076857177-7470076d4098?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3ZWRkaW5nJTIwdmVudWV8ZW58MHx8fHwxNzY1ODA2ODY3fDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding venue"
+    },
+    {
+      "id": "category-dress",
+      "description": "A beautiful wedding dress.",
+      "imageUrl": "https://images.unsplash.com/photo-1600287792237-3f66db635a73?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d2VkZGluZyUyMGRyZXNzfGVufDB8fHx8MTc2NTc3NjMxNXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding dress"
+    },
+    {
+      "id": "category-makeup",
+      "description": "A bride getting her makeup done.",
+      "imageUrl": "https://images.unsplash.com/photo-1646770965835-4547b3ef13b0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3ZWRkaW5nJTIwbWFrZXVwfGVufDB8fHx8MTc2NTgxMzgzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding makeup"
+    },
+    {
+      "id": "product-1",
+      "description": "A luxurious ballroom wedding venue.",
+      "imageUrl": "https://images.unsplash.com/photo-1633528760485-a4fa9ecd037b?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxiYWxscm9vbSUyMHZlbnVlfGVufDB8fHx8MTc2NTgxMzgzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "ballroom venue"
+    },
+    {
+      "id": "product-2",
+      "description": "A modern minimalist wedding dress.",
+      "imageUrl": "https://images.unsplash.com/photo-1594552072238-b8a33785b261?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHx3ZWRkaW5nJTIwZ293bnxlbnwwfHx8fDE3NjU4MTM4MzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding gown"
+    },
+    {
+      "id": "product-3",
+      "description": "A full day wedding photography package.",
+      "imageUrl": "https://images.unsplash.com/flagged/photo-1552981941-424aac2b4311?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw0fHx3ZWRkaW5nJTIwcGhvdG9ncmFwaHl8ZW58MHx8fHwxNzY1ODEzODMxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding photography"
+    },
+    {
+      "id": "product-4",
+      "description": "A garden wedding decoration package.",
+      "imageUrl": "https://images.unsplash.com/photo-1505944357431-27579db47558?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxnYXJkZW4lMjB3ZWRkaW5nfGVufDB8fHx8MTc2NTgxMzI5NHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "garden wedding"
+    },
+    {
+      "id": "product-5",
+      "description": "Indonesian traditional wedding catering for 500 guests.",
+      "imageUrl": "https://images.unsplash.com/photo-1601491641387-035a4ae3c7cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d2VkZGluZyUyMGZvb2R8ZW58MHx8fHwxNzY1ODEzODMxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding food"
+    },
+    {
+      "id": "product-6",
+      "description": "Acoustic band and MC for wedding reception.",
+      "imageUrl": "https://images.unsplash.com/photo-1606405112653-809073e30efe?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHx3ZWRkaW5nJTIwYmFuZHxlbnwwfHx8fDE3NjU3MzUxNTV8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding band"
+    },
+    {
+      "id": "product-7",
+      "description": "Pre-wedding photoshoot in Bali.",
+      "imageUrl": "https://images.unsplash.com/photo-1654157533784-a5d187ae2d0a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHxwcmV3ZWRkaW5nJTIwY291cGxlfGVufDB8fHx8MTc2NTgxMzgzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "prewedding couple"
+    },
+    {
+      "id": "product-8",
+      "description": "Custom elegant wedding invitations.",
+      "imageUrl": "https://images.unsplash.com/photo-1697217866029-2aef7068ecee?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHx3ZWRkaW5nJTIwaW52aXRhdGlvbnxlbnwwfHx8fDE3NjU3NzMwMjd8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding invitation"
+    },
+    {
+      "id": "product-9",
+      "description": "Luxury wedding car rental.",
+      "imageUrl": "https://images.unsplash.com/photo-1570907870057-e1e338bc0665?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3ZWRkaW5nJTIwY2FyfGVufDB8fHx8MTc2NTgxMzgzMXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding car"
+    },
+    {
+      "id": "user-avatar-1",
+      "description": "User avatar.",
+      "imageUrl": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxfHxwZXJzb24lMjBmYWNlfGVufDB8fHx8MTc2NTcxMzM3MHww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person face"
+    },
+    {
+      "id": "user-avatar-2",
+      "description": "User avatar.",
+      "imageUrl": "https://images.unsplash.com/photo-1600180758890-6b94519a8ba6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxwZXJzb24lMjBwb3J0cmFpdHxlbnwwfHx8fDE3NjU3NzMxMTR8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "person portrait"
+    },
+    {
+      "id": "user-avatar-3",
+      "description": "User avatar.",
+      "imageUrl": "https://images.unsplash.com/photo-1563178406-4cdc2923acbc?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwxMHx8d29tYW4lMjBzbWlsaW5nfGVufDB8fHx8MTc2NTcwMzQ1OXww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "woman smiling"
+    },
+    {
+      "id": "blog-1",
+      "description": "Wedding planning tips.",
+      "imageUrl": "https://images.unsplash.com/photo-1583939411023-14783179e581?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwyfHx3ZWRkaW5nJTIwcGxhbm5pbmd8ZW58MHx8fHwxNzY1ODEzODMxfDA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "wedding planning"
+    },
+    {
+      "id": "blog-2",
+      "description": "Choosing the right vendor.",
+      "imageUrl": "https://images.unsplash.com/photo-1754039985008-a15410211b67?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHwzfHxjaGVja2xpc3QlMjBoYW5kc3xlbnwwfHx8fDE3NjU4MTM4MzF8MA&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "checklist hands"
+    },
+    {
+      "id": "blog-3",
+      "description": "Honeymoon destinations in Java.",
+      "imageUrl": "https://images.unsplash.com/photo-1595835018349-198460e1d309?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxqYXZhJTIwbGFuZHNjYXBlfGVufDB8fHx8MTc2NTgxMzgzMnww&ixlib=rb-4.1.0&q=80&w=1080",
+      "imageHint": "java landscape"
+    }
+  ]
 }
