@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
     };
   }
   return {
-    title: `${product.title} - Cremonica`,
+    title: `${product.title} - Janji Suci`,
     description: product.description,
   };
 }

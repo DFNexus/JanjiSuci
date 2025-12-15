@@ -48,7 +48,7 @@ export function AppHeader() {
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <div className="mr-4 hidden md:flex">
           <Link href="/" className="mr-6 flex items-center space-x-2">
-            <Icons.CremonicaLogo className="h-6 w-auto" />
+            <Icons.JanjiSuciLogo className="h-6 w-auto" />
           </Link>
           <nav className="flex items-center gap-4 text-sm">
             {navLinks.map((link) => (
@@ -77,8 +77,8 @@ export function AppHeader() {
                 href="#"
                 className="group flex h-10 w-10 shrink-0 items-center justify-center gap-2 rounded-full bg-primary text-lg font-semibold text-primary-foreground md:text-base"
               >
-                <Icons.CremonicaLogo className="h-5 w-5 transition-all group-hover:scale-110" />
-                <span className="sr-only">Cremonica</span>
+                <Icons.JanjiSuciLogo className="h-5 w-5 transition-all group-hover:scale-110" />
+                <span className="sr-only">Janji Suci</span>
               </Link>
               {navLinks.map((link) => (
               <Link

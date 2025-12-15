@@ -90,9 +90,9 @@ export default function CheckoutPage() {
                     <Banknote className="h-4 w-4" />
                     <AlertTitle>Transfer Bank</AlertTitle>
                     <AlertDescription className="space-y-2 mt-2">
-                        <p><strong>Bank Cremonica (BCA)</strong></p>
+                        <p><strong>Bank Janji Suci (BCA)</strong></p>
                         <p>No. Rekening: <strong>123-456-7890</strong></p>
-                        <p>Atas Nama: <strong>PT Cremonica Jaya</strong></p>
+                        <p>Atas Nama: <strong>PT Janji Suci Jaya</strong></p>
                         <p>Total: <strong className="text-primary">{formatPrice(cartTotal)}</strong></p>
                     </AlertDescription>
                 </Alert>

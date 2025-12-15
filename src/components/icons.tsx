@@ -1,7 +1,7 @@
 import type { SVGProps } from 'react';
 
 export const Icons = {
-  CremonicaLogo: (props: SVGProps<SVGSVGElement>) => (
+  JanjiSuciLogo: (props: SVGProps<SVGSVGElement>) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 100 25"
@@ -19,7 +19,7 @@ export const Icons = {
         fontSize="19"
         fill="currentColor"
       >
-        Cremonica
+        Janji Suci
       </text>
     </svg>
   ),

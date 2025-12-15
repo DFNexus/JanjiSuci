@@ -15,9 +15,9 @@ const alegreya = Alegreya({
 });
 
 export const metadata: Metadata = {
-  title: 'Cremonica - Your Javanese Wedding Marketplace',
+  title: 'Janji Suci - Your Javanese Wedding Marketplace',
   description:
-    'Discover and book the finest wedding vendors across Java Island. Cremonica connects you with top-tier services for your special day.',
+    'Discover and book the finest wedding vendors across Java Island. Janji Suci connects you with top-tier services for your special day.',
 };
 
 export default function RootLayout({

@@ -25,7 +25,7 @@ export function HeroSection() {
           Wujudkan Pernikahan Impian Anda di Jawa
         </h1>
         <p className="max-w-2xl text-lg md:text-xl text-slate-200 drop-shadow-md">
-          Temukan vendor terbaik untuk hari istimewa Anda, dari Sabang sampai Merauke... di Pulau Jawa.
+          Dari Impian Menjadi Kenyataan
         </p>
         <form className="w-full max-w-xl mt-4">
           <div className="relative">

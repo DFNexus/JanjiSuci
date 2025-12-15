@@ -5,7 +5,7 @@ import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const metadata = {
-  title: "Browse Wedding Products - Cremonica",
+  title: "Browse Wedding Products - Janji Suci",
   description: "Find the perfect vendors and services for your wedding in Java.",
 };
 

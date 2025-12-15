@@ -6,7 +6,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const metadata = {
-  title: "Blog & Tips Pernikahan - Cremonica",
+  title: "Blog & Tips Pernikahan - Janji Suci",
   description: "Dapatkan tips, inspirasi, dan panduan untuk merencanakan pernikahan impian Anda di Jawa.",
 };
 
