@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useAuth } from '@/context/auth-context';
@@ -98,11 +99,22 @@ export default function AdminPage() {
     e.preventDefault();
     setIsSubmitting(true);
     const formData = new FormData(e.target as HTMLFormElement);
+    
+    const vendorId = formData.get('productVendor') as string;
+    const selectedVendor = vendors.find(v => v.id === vendorId);
+
+    if (!selectedVendor) {
+        toast({ title: 'Error', description: 'Vendor tidak ditemukan.', variant: 'destructive' });
+        setIsSubmitting(false);
+        return;
+    }
+
     const productData = {
-        vendorId: formData.get('productVendor') as string,
+        vendorId: vendorId,
         title: formData.get('productTitle') as string,
         price: Number(formData.get('productPrice')),
         description: formData.get('productDescription') as string,
+        category: selectedVendor.category,
     };
 
     try {
@@ -274,6 +286,16 @@ function VendorTable({ vendors, onDelete, isLoading }: { vendors: Vendor[], onDe
 }
 
 function ProductTable({ products, onDelete, isLoading }: { products: Product[], onDelete: (id: string) => void, isLoading: boolean }) {
+    const [allVendors, setAllVendors] = useState<Vendor[]>([]);
+
+    useEffect(() => {
+        getVendors().then(setAllVendors);
+    }, []);
+
+    const getVendorInfo = (vendorId: string) => {
+        return allVendors.find(v => v.id === vendorId);
+    }
+
     if (isLoading) return <p>Memuat data produk...</p>
     if (products.length === 0) return <p className="text-muted-foreground text-center">Belum ada produk.</p>
 
@@ -282,24 +304,27 @@ function ProductTable({ products, onDelete, isLoading }: { products: Product[], 
             <TableHeader>
                 <TableRow>
                     <TableHead>Nama Produk</TableHead>
+                    <TableHead>Vendor</TableHead>
                     <TableHead>Kategori</TableHead>
-                    <TableHead>Lokasi</TableHead>
                     <TableHead>Harga</TableHead>
                     <TableHead className="text-right">Aksi</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {products.map(product => (
-                    <TableRow key={product.id}>
-                        <TableCell className="font-medium">{product.title}</TableCell>
-                        <TableCell>{product.category}</TableCell>
-                        <TableCell>{product.location}</TableCell>
-                        <TableCell>{formatPrice(product.price)}</TableCell>
-                        <TableCell className="text-right">
-                           <DeleteButton onConfirm={() => onDelete(product.id)} />
-                        </TableCell>
-                    </TableRow>
-                ))}
+                {products.map(product => {
+                    const vendor = getVendorInfo(product.vendorId);
+                    return (
+                        <TableRow key={product.id}>
+                            <TableCell className="font-medium">{product.title}</TableCell>
+                            <TableCell>{vendor?.name || 'N/A'}</TableCell>
+                            <TableCell>{product.category}</TableCell>
+                            <TableCell>{formatPrice(product.price)}</TableCell>
+                            <TableCell className="text-right">
+                               <DeleteButton onConfirm={() => onDelete(product.id)} />
+                            </TableCell>
+                        </TableRow>
+                    )
+                })}
             </TableBody>
         </Table>
     )
@@ -328,3 +353,5 @@ function DeleteButton({ onConfirm }: { onConfirm: () => void }) {
     </AlertDialog>
   )
 }
+
+    
