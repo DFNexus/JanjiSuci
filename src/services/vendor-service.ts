@@ -1,17 +1,30 @@
 'use server';
 
 import { db } from '@/lib/firebase';
-import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import type { Vendor, VendorInput } from '@/lib/types';
 
 const VENDORS_COLLECTION = 'vendors';
+
+const vendorFromDoc = (doc: QueryDocumentSnapshot<DocumentData>): Vendor => {
+    const data = doc.data();
+    return {
+        id: doc.id,
+        name: data.name,
+        category: data.category,
+        location: data.location,
+        whatsappNumber: data.whatsappNumber,
+        rating: data.rating || 0,
+        reviewCount: data.reviewCount || 0,
+    };
+}
 
 // Create
 export async function addVendor(vendorData: VendorInput): Promise<Vendor> {
   const docRef = await addDoc(collection(db, VENDORS_COLLECTION), {
     ...vendorData,
-    rating: 0, // Initial value
-    reviewCount: 0, // Initial value
+    rating: 0,
+    reviewCount: 0,
   });
   return {
     id: docRef.id,
@@ -24,11 +37,7 @@ export async function addVendor(vendorData: VendorInput): Promise<Vendor> {
 // Read
 export async function getVendors(): Promise<Vendor[]> {
   const querySnapshot = await getDocs(collection(db, VENDORS_COLLECTION));
-  const vendors: Vendor[] = [];
-  querySnapshot.forEach((doc) => {
-    vendors.push({ id: doc.id, ...doc.data() } as Vendor);
-  });
-  return vendors;
+  return querySnapshot.docs.map(vendorFromDoc);
 }
 
 // Update

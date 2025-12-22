@@ -11,16 +11,46 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { categories, javaLocations } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
-import { addVendor, getVendors } from '@/services/vendor-service';
-import { addProduct } from '@/services/product-service';
-import type { Vendor } from '@/lib/types';
+import { addVendor, getVendors, deleteVendor } from '@/services/vendor-service';
+import { addProduct, getProducts, deleteProduct } from '@/services/product-service';
+import type { Vendor, Product } from '@/lib/types';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Trash2 } from 'lucide-react';
+import { formatPrice } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
   const [vendors, setVendors] = useState<Vendor[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoadingData, setIsLoadingData] = useState(true);
+
+  const fetchAllData = async () => {
+    setIsLoadingData(true);
+    try {
+        const [vendorList, productList] = await Promise.all([getVendors(), getProducts()]);
+        setVendors(vendorList);
+        setProducts(productList);
+    } catch (error) {
+        console.error("Failed to fetch data:", error);
+        toast({ title: 'Error', description: 'Gagal memuat data dari database.', variant: 'destructive' });
+    } finally {
+        setIsLoadingData(false);
+    }
+  };
 
   useEffect(() => {
     if (!loading && (!user || user.role !== 'admin')) {
@@ -30,18 +60,11 @@ export default function AdminPage() {
         variant: 'destructive',
       });
       router.push('/');
+    } else if (user) {
+        fetchAllData();
     }
   }, [user, loading, router, toast]);
 
-  useEffect(() => {
-    if (user && user.role === 'admin') {
-      const fetchVendors = async () => {
-        const vendorList = await getVendors();
-        setVendors(vendorList);
-      };
-      fetchVendors();
-    }
-  }, [user]);
 
   if (loading || !user || user.role !== 'admin') {
     return <div className="container py-12 text-center">Memverifikasi akses...</div>;
@@ -59,10 +82,10 @@ export default function AdminPage() {
     };
     
     try {
-      const newVendor = await addVendor(vendorData);
-      setVendors(prev => [...prev, newVendor]);
+      await addVendor(vendorData);
       toast({ title: 'Sukses', description: 'Vendor baru berhasil ditambahkan.' });
       (e.target as HTMLFormElement).reset();
+      fetchAllData();
     } catch (error) {
       console.error("Error adding vendor: ", error);
       toast({ title: 'Error', description: 'Gagal menambahkan vendor.', variant: 'destructive' });
@@ -77,18 +100,16 @@ export default function AdminPage() {
     const formData = new FormData(e.target as HTMLFormElement);
     const productData = {
         vendorId: formData.get('productVendor') as string,
-        category: vendors.find(v => v.id === formData.get('productVendor'))?.category || '',
         title: formData.get('productTitle') as string,
         price: Number(formData.get('productPrice')),
         description: formData.get('productDescription') as string,
-        location: vendors.find(v => v.id === formData.get('productVendor'))?.location || '',
-        images: ['https://picsum.photos/seed/newproduct/600/400'], // Placeholder image
     };
 
     try {
       await addProduct(productData);
       toast({ title: 'Sukses', description: 'Produk baru berhasil ditambahkan.' });
       (e.target as HTMLFormElement).reset();
+      fetchAllData();
     } catch (error) {
       console.error("Error adding product: ", error);
       toast({ title: 'Error', description: 'Gagal menambahkan produk.', variant: 'destructive' });
@@ -97,9 +118,32 @@ export default function AdminPage() {
     }
   };
 
+  const handleDeleteVendor = async (id: string) => {
+    try {
+      await deleteVendor(id);
+      toast({ title: 'Sukses', description: 'Vendor berhasil dihapus.' });
+      fetchAllData();
+    } catch (error) {
+       console.error("Error deleting vendor: ", error);
+       toast({ title: 'Error', description: 'Gagal menghapus vendor.', variant: 'destructive' });
+    }
+  };
+
+  const handleDeleteProduct = async (id: string) => {
+    try {
+      await deleteProduct(id);
+      toast({ title: 'Sukses', description: 'Produk berhasil dihapus.' });
+      fetchAllData();
+    } catch (error) {
+       console.error("Error deleting product: ", error);
+       toast({ title: 'Error', description: 'Gagal menghapus produk.', variant: 'destructive' });
+    }
+  };
+
   return (
-    <div className="container py-12">
-      <h1 className="text-4xl font-headline font-bold mb-8">Admin Dashboard</h1>
+    <div className="container py-12 space-y-12">
+      <h1 className="text-4xl font-headline font-bold">Admin Dashboard</h1>
+      
       <div className="grid gap-8 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -146,8 +190,8 @@ export default function AdminPage() {
              <form onSubmit={handleAddProduct} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="productVendor">Vendor</Label>
-                <Select name="productVendor" required>
-                  <SelectTrigger><SelectValue placeholder="Pilih Vendor" /></SelectTrigger>
+                <Select name="productVendor" required disabled={vendors.length === 0}>
+                  <SelectTrigger><SelectValue placeholder={vendors.length > 0 ? "Pilih Vendor" : "Belum ada vendor"} /></SelectTrigger>
                   <SelectContent>{vendors.map(v => <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
@@ -163,13 +207,124 @@ export default function AdminPage() {
                 <Label htmlFor="productDescription">Deskripsi</Label>
                 <Textarea id="productDescription" name="productDescription" placeholder="Deskripsi singkat produk/layanan" required />
               </div>
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
+              <Button type="submit" className="w-full" disabled={isSubmitting || vendors.length === 0}>
                 {isSubmitting ? 'Menambahkan...' : 'Tambah Produk'}
               </Button>
             </form>
           </CardContent>
         </Card>
       </div>
+
+      <div className="space-y-8">
+        <Card>
+            <CardHeader>
+                <CardTitle>Daftar Vendor</CardTitle>
+                <CardDescription>Kelola semua vendor yang terdaftar di platform.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <VendorTable vendors={vendors} onDelete={handleDeleteVendor} isLoading={isLoadingData} />
+            </CardContent>
+        </Card>
+        
+        <Card>
+            <CardHeader>
+                <CardTitle>Daftar Produk</CardTitle>
+                <CardDescription>Kelola semua produk atau layanan yang ditawarkan.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <ProductTable products={products} onDelete={handleDeleteProduct} isLoading={isLoadingData} />
+            </CardContent>
+        </Card>
+      </div>
+
     </div>
   );
+}
+
+function VendorTable({ vendors, onDelete, isLoading }: { vendors: Vendor[], onDelete: (id: string) => void, isLoading: boolean }) {
+    if (isLoading) return <p>Memuat data vendor...</p>
+    if (vendors.length === 0) return <p className="text-muted-foreground text-center">Belum ada vendor.</p>
+
+    return (
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Nama</TableHead>
+                    <TableHead>Kategori</TableHead>
+                    <TableHead>Lokasi</TableHead>
+                    <TableHead>WhatsApp</TableHead>
+                    <TableHead className="text-right">Aksi</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {vendors.map(vendor => (
+                    <TableRow key={vendor.id}>
+                        <TableCell className="font-medium">{vendor.name}</TableCell>
+                        <TableCell>{vendor.category}</TableCell>
+                        <TableCell>{vendor.location}</TableCell>
+                        <TableCell>{vendor.whatsappNumber}</TableCell>
+                        <TableCell className="text-right">
+                           <DeleteButton onConfirm={() => onDelete(vendor.id)} />
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    )
+}
+
+function ProductTable({ products, onDelete, isLoading }: { products: Product[], onDelete: (id: string) => void, isLoading: boolean }) {
+    if (isLoading) return <p>Memuat data produk...</p>
+    if (products.length === 0) return <p className="text-muted-foreground text-center">Belum ada produk.</p>
+
+    return (
+        <Table>
+            <TableHeader>
+                <TableRow>
+                    <TableHead>Nama Produk</TableHead>
+                    <TableHead>Kategori</TableHead>
+                    <TableHead>Lokasi</TableHead>
+                    <TableHead>Harga</TableHead>
+                    <TableHead className="text-right">Aksi</TableHead>
+                </TableRow>
+            </TableHeader>
+            <TableBody>
+                {products.map(product => (
+                    <TableRow key={product.id}>
+                        <TableCell className="font-medium">{product.title}</TableCell>
+                        <TableCell>{product.category}</TableCell>
+                        <TableCell>{product.location}</TableCell>
+                        <TableCell>{formatPrice(product.price)}</TableCell>
+                        <TableCell className="text-right">
+                           <DeleteButton onConfirm={() => onDelete(product.id)} />
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
+        </Table>
+    )
+}
+
+function DeleteButton({ onConfirm }: { onConfirm: () => void }) {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger asChild>
+        <Button variant="ghost" size="icon">
+          <Trash2 className="h-4 w-4 text-destructive" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Apakah Anda yakin?</AlertDialogTitle>
+          <AlertDialogDescription>
+            Tindakan ini tidak bisa dibatalkan. Ini akan menghapus data secara permanen dari server.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Batal</AlertDialogCancel>
+          <AlertDialogAction onClick={onConfirm} className="bg-destructive hover:bg-destructive/90">Hapus</AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  )
 }

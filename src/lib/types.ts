@@ -62,4 +62,6 @@ export type Order = {
 
 // Types for Firestore data manipulation
 export type VendorInput = Omit<Vendor, 'id' | 'rating' | 'reviewCount'>;
-export type ProductInput = Omit<Product, 'id' | 'rating' | 'reviewCount'>;
+export type ProductInput = Omit<Product, 'id' | 'rating' | 'reviewCount' | 'vendorId' | 'location'> & {
+    vendorId: string;
+};
