@@ -39,7 +39,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
     );
   }
 
-  if (category) {
+  if (category && category !== 'all') {
     const categoryName = categories.find(c => c.slug === category)?.name;
     if (categoryName) {
       filteredProducts = filteredProducts.filter(p => p.category === categoryName);
@@ -53,7 +53,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
   if (price && price !== 'all') {
     const [min, max] = price.split('-').map(Number);
     const maxPrice = max === Infinity ? Number.MAX_SAFE_INTEGER : max;
-    filteredProducts = filteredProducts.filter(p => p.price >= min && p.price <= maxPrice);
+    filteredProducts = filteredProducts.filter(p => p.price >= min && p.price <= (maxPrice || Number.MAX_SAFE_INTEGER));
   }
   
   if (sort) {
@@ -70,6 +70,9 @@ export default async function ProductsPage({ searchParams }: { searchParams: Sea
         case 'price_desc':
             filteredProducts.sort((a, b) => b.price - a.price);
             break;
+        default:
+             filteredProducts.sort((a, b) => b.reviewCount - a.reviewCount); // Default to popular
+             break;
     }
   }
 

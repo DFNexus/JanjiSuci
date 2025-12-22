@@ -2,35 +2,38 @@
 
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { User, Mail, Edit, LogOut } from 'lucide-react';
 import { mockOrders, products } from '@/lib/mock-data';
-import type { Order } from '@/lib/types';
+import type { Order, CartItem } from '@/lib/types';
 import { formatPrice } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 
 export default function ProfilePage() {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
+  const [userOrders, setUserOrders] = useState<Order[]>([]);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login?redirect=/profile');
+    } else if (user) {
+      // Filter orders based on the current user's ID
+      const fetchedOrders = mockOrders.filter(order => order.userId === user.uid).map(order => ({
+        ...order,
+        items: order.items.map(item => {
+            const product = products.find(p => p.id === item.productId);
+            // This assertion is risky if a product can be deleted, but we'll assume it exists for now.
+            return { product: product!, quantity: item.quantity };
+        }).filter(item => item.product) as CartItem[],
+      }));
+      setUserOrders(fetchedOrders);
     }
   }, [user, loading, router]);
-  
-  const userOrders: Order[] = mockOrders.map(order => ({
-    ...order,
-    items: order.items.map(item => ({
-      product: products.find(p => p.id === item.productId)!,
-      quantity: item.quantity
-    })).filter(item => item.product) // Filter out items where product is not found
-  }));
-
 
   if (loading || !user) {
     return <div className="container py-12 text-center">Loading profile...</div>;
@@ -82,12 +85,11 @@ export default function ProfilePage() {
             <CardContent className="space-y-6">
                 {userOrders.length > 0 ? userOrders.map(order => (
                     <Card key={order.id} className="bg-secondary/50">
-                        <CardHeader className="flex-row justify-between items-center pb-2">
+                        <CardHeader className="pb-2">
                            <div>
                             <p className="font-semibold">Order #{order.id}</p>
                             <p className="text-sm text-muted-foreground">{new Date(order.date).toLocaleDateString()}</p>
                            </div>
-                           <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>{order.status}</Badge>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2">
@@ -99,9 +101,12 @@ export default function ProfilePage() {
                                 ))}
                             </div>
                             <Separator className="my-2" />
-                            <div className="flex justify-between font-semibold">
-                                <span>Total</span>
-                                <span>{formatPrice(order.total)}</span>
+                            <div className="flex justify-between items-center">
+                                <div className="font-semibold">
+                                    <span>Total: </span>
+                                    <span>{formatPrice(order.total)}</span>
+                                </div>
+                                <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>{order.status}</Badge>
                             </div>
                         </CardContent>
                     </Card>

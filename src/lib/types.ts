@@ -49,6 +49,7 @@ export type Review = {
 export type CartItem = {
   product: Product;
   quantity: number;
+  bookingDate?: Date;
 };
 
 export type Order = {
@@ -62,6 +63,6 @@ export type Order = {
 
 // Types for Firestore data manipulation
 export type VendorInput = Omit<Vendor, 'id' | 'rating' | 'reviewCount'>;
-export type ProductInput = Omit<Product, 'id' | 'rating' | 'reviewCount' | 'vendorId' | 'location'> & {
+export type ProductInput = Omit<Product, 'id' | 'rating' | 'reviewCount' | 'location'> & {
     vendorId: string;
 };

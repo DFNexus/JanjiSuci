@@ -8,8 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { formatPrice } from '@/lib/utils';
-import { ShoppingCart, Trash2 } from 'lucide-react';
+import { ShoppingCart, Trash2, Calendar } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { format } from 'date-fns';
 
 export default function CartPage() {
   const { cartItems, updateQuantity, removeFromCart, cartTotal, cartCount } = useCart();
@@ -35,7 +36,7 @@ export default function CartPage() {
       <h1 className="text-4xl font-headline font-bold mb-8">Keranjang Belanja</h1>
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="lg:col-span-2 space-y-4">
-          {cartItems.map(({ product, quantity }) => (
+          {cartItems.map(({ product, quantity, bookingDate }) => (
             <Card key={product.id} className="overflow-hidden">
               <CardContent className="p-4 flex gap-4 items-start">
                 <div className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-md overflow-hidden flex-shrink-0">
@@ -52,6 +53,12 @@ export default function CartPage() {
                     <h3 className="font-bold hover:underline">{product.title}</h3>
                   </Link>
                   <p className="text-sm text-muted-foreground">{product.category}</p>
+                   {bookingDate && (
+                    <div className="flex items-center text-sm text-muted-foreground mt-1">
+                      <Calendar className="mr-1.5 h-4 w-4" />
+                      {format(bookingDate, 'PPP')}
+                    </div>
+                  )}
                   <p className="text-lg font-semibold text-primary mt-1">
                     {formatPrice(product.price)}
                   </p>
