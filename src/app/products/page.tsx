@@ -1,8 +1,10 @@
 import { ProductGrid } from "@/components/pages/products/product-grid";
 import { ProductFilters } from "@/components/pages/products/product-filters";
-import { products, categories, javaLocations, priceRanges, sortOptions } from "@/lib/mock-data";
+import { categories, javaLocations, priceRanges, sortOptions } from "@/lib/mock-data";
+import { getProducts } from "@/services/product-service";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import type { Product } from "@/lib/types";
 
 export const metadata = {
   title: "Browse Wedding Products - Janji Suci",
@@ -18,7 +20,7 @@ type SearchParams = {
   page?: string;
 };
 
-export default function ProductsPage({ searchParams }: { searchParams: SearchParams }) {
+export default async function ProductsPage({ searchParams }: { searchParams: SearchParams }) {
   const {
     search,
     category,
@@ -27,7 +29,8 @@ export default function ProductsPage({ searchParams }: { searchParams: SearchPar
     sort,
   } = searchParams;
 
-  let filteredProducts = [...products];
+  const products = await getProducts();
+  let filteredProducts: Product[] = [...products];
 
   if (search) {
     filteredProducts = filteredProducts.filter(p =>
@@ -49,7 +52,8 @@ export default function ProductsPage({ searchParams }: { searchParams: SearchPar
 
   if (price && price !== 'all') {
     const [min, max] = price.split('-').map(Number);
-    filteredProducts = filteredProducts.filter(p => p.price >= min && p.price <= max);
+    const maxPrice = max === Infinity ? Number.MAX_SAFE_INTEGER : max;
+    filteredProducts = filteredProducts.filter(p => p.price >= min && p.price <= maxPrice);
   }
   
   if (sort) {

@@ -1,5 +1,6 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -16,7 +17,9 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+const db = getFirestore(app);
+
 
 // NOTE: This is a placeholder file.
 // You will need to set up your Firebase project and add the environment variables
@@ -31,4 +34,4 @@ const app = initializeApp(firebaseConfig);
 // NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
 // NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your_measurement_id
 
-export { app };
+export { app, db };

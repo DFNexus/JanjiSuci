@@ -59,3 +59,7 @@ export type Order = {
   status: 'pending' | 'paid' | 'completed' | 'cancelled';
   date: string;
 };
+
+// Types for Firestore data manipulation
+export type VendorInput = Omit<Vendor, 'id' | 'rating' | 'reviewCount'>;
+export type ProductInput = Omit<Product, 'id' | 'rating' | 'reviewCount'>;
