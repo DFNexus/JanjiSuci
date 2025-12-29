@@ -180,70 +180,74 @@ export default function AdminPage() {
     <div className="container py-12 space-y-12">
       <h1 className="text-4xl font-headline font-bold">Admin Dashboard</h1>
       
-      <div className="grid gap-8 md:grid-cols-2">
-        <Card>
+      <div className="grid gap-8 md:grid-cols-2 items-start">
+        <Card className="flex flex-col h-full">
           <CardHeader>
             <CardTitle>Tambah Vendor Baru</CardTitle>
             <CardDescription>Vendor tidak bisa mendaftar sendiri.</CardDescription>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleAddVendor} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="vendorName">Nama Vendor</Label>
-                <Input id="vendorName" name="vendorName" placeholder="Contoh: Gedung Pernikahan Mewah" required />
+          <CardContent className="flex-grow">
+            <form onSubmit={handleAddVendor} className="flex flex-col h-full">
+              <div className="space-y-4 flex-grow">
+                <div className="space-y-2">
+                  <Label htmlFor="vendorName">Nama Vendor</Label>
+                  <Input id="vendorName" name="vendorName" placeholder="Contoh: Gedung Pernikahan Mewah" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vendorCategory">Kategori</Label>
+                  <Select name="vendorCategory" required>
+                    <SelectTrigger><SelectValue placeholder="Pilih Kategori" /></SelectTrigger>
+                    <SelectContent>{categories.map(c => <SelectItem key={c.slug} value={c.name}>{c.name}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vendorLocation">Lokasi</Label>
+                  <Select name="vendorLocation" required>
+                    <SelectTrigger><SelectValue placeholder="Pilih Lokasi" /></SelectTrigger>
+                    <SelectContent>{javaLocations.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vendorWhatsapp">Nomor WhatsApp</Label>
+                  <Input id="vendorWhatsapp" name="vendorWhatsapp" placeholder="+6281234567890" required />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="vendorCategory">Kategori</Label>
-                <Select name="vendorCategory" required>
-                  <SelectTrigger><SelectValue placeholder="Pilih Kategori" /></SelectTrigger>
-                  <SelectContent>{categories.map(c => <SelectItem key={c.slug} value={c.name}>{c.name}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="vendorLocation">Lokasi</Label>
-                <Select name="vendorLocation" required>
-                  <SelectTrigger><SelectValue placeholder="Pilih Lokasi" /></SelectTrigger>
-                  <SelectContent>{javaLocations.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="vendorWhatsapp">Nomor WhatsApp</Label>
-                <Input id="vendorWhatsapp" name="vendorWhatsapp" placeholder="+6281234567890" required />
-              </div>
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
+              <Button type="submit" className="w-full mt-4" disabled={isSubmitting}>
                 {isSubmitting ? 'Menambahkan...' : 'Tambah Vendor'}
               </Button>
             </form>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="flex flex-col h-full">
           <CardHeader>
             <CardTitle>Tambah Produk Baru</CardTitle>
             <CardDescription>Tambahkan produk untuk vendor yang sudah ada.</CardDescription>
           </CardHeader>
-          <CardContent>
-             <form onSubmit={handleAddProduct} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="productVendor">Pilih Vendor yang Sudah Ada</Label>
-                <Select name="productVendor" required disabled={vendors.length === 0}>
-                  <SelectTrigger><SelectValue placeholder={vendors.length > 0 ? "Pilih Vendor" : "Belum ada vendor"} /></SelectTrigger>
-                  <SelectContent>{vendors.map(v => <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>)}</SelectContent>
-                </Select>
+          <CardContent className="flex-grow">
+             <form onSubmit={handleAddProduct} className="flex flex-col h-full">
+              <div className="space-y-4 flex-grow">
+                <div className="space-y-2">
+                  <Label htmlFor="productVendor">Pilih Vendor yang Sudah Ada</Label>
+                  <Select name="productVendor" required disabled={vendors.length === 0}>
+                    <SelectTrigger><SelectValue placeholder={vendors.length > 0 ? "Pilih Vendor" : "Belum ada vendor"} /></SelectTrigger>
+                    <SelectContent>{vendors.map(v => <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>)}</SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="productTitle">Nama Produk/Layanan</Label>
+                  <Input id="productTitle" name="productTitle" placeholder="Contoh: Paket Foto & Video" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="productPrice">Harga</Label>
+                  <Input id="productPrice" name="productPrice" type="number" placeholder="Contoh: 8000000" required />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="productDescription">Deskripsi</Label>
+                  <Textarea id="productDescription" name="productDescription" placeholder="Deskripsi singkat produk/layanan" required />
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="productTitle">Nama Produk/Layanan</Label>
-                <Input id="productTitle" name="productTitle" placeholder="Contoh: Paket Foto & Video" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="productPrice">Harga</Label>
-                <Input id="productPrice" name="productPrice" type="number" placeholder="Contoh: 8000000" required />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="productDescription">Deskripsi</Label>
-                <Textarea id="productDescription" name="productDescription" placeholder="Deskripsi singkat produk/layanan" required />
-              </div>
-              <Button type="submit" className="w-full" disabled={isSubmitting || vendors.length === 0}>
+              <Button type="submit" className="w-full mt-4" disabled={isSubmitting || vendors.length === 0}>
                 {isSubmitting ? 'Menambahkan...' : 'Tambah Produk'}
               </Button>
             </form>
@@ -370,3 +374,5 @@ function DeleteButton({ onConfirm }: { onConfirm: () => void }) {
     </AlertDialog>
   )
 }
+
+    
