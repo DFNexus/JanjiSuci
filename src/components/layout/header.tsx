@@ -96,19 +96,19 @@ export function AppHeader() {
             {user ? (
                 <>
                 <Link href="/cart">
-                    <Button variant="ghost" size="icon" aria-label="Cart">
-                        <ShoppingCart className="h-5 w-5" />
+                    <Button variant="ghost" size="icon" aria-label="Cart" className="relative hover:bg-destructive">
+                        <ShoppingCart className="h-5 w-5 hover:text-destructive-foreground" />
                         {cartCount > 0 && (
-                        <Badge variant="destructive" className="absolute top-0 right-0 h-5 w-5 justify-center p-0">{cartCount}</Badge>
+                        <Badge variant="destructive" className="absolute -top-1 -right-1 h-5 w-5 justify-center p-0">{cartCount}</Badge>
                         )}
                     </Button>
                 </Link>
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="relative rounded-full">
+                    <Button variant="ghost" size="icon" className="relative rounded-full hover:bg-destructive group">
                         <Avatar className="h-8 w-8">
                         <AvatarImage src={user.profileData?.avatar} alt={user.name || 'User'} />
-                        <AvatarFallback>{getAvatarFallback(user.name)}</AvatarFallback>
+                        <AvatarFallback className="group-hover:bg-destructive group-hover:text-destructive-foreground">{getAvatarFallback(user.name)}</AvatarFallback>
                         </Avatar>
                     </Button>
                     </DropdownMenuTrigger>
