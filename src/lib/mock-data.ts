@@ -49,10 +49,10 @@ export const categories = [
 
 export const javaLocations = [
   "Jakarta",
-  "West Java",
-  "Central Java",
-  "East Java",
+  "Bandung",
+  "Surabaya",
   "Yogyakarta",
+  "Semarang",
   "Banten",
 ];
 
@@ -72,12 +72,12 @@ export const sortOptions = [
 ];
 
 export const mockOrders: (Omit<import('./types').Order, 'items'> & { items: { productId: string, quantity: number }[] })[] = [
-  { id: 'ord1', userId: 'u1', items: [{ productId: 'p1', quantity: 1 }, { productId: 'p2', quantity: 1 }], total: 90000000, status: 'completed', date: '2023-07-15' },
-  { id: 'ord2', userId: 'u1', items: [{ productId: 'p5', quantity: 1 }], total: 45000000, status: 'paid', date: '2024-05-20' },
+  { id: 'ord1', userId: 'mock-uid-1', items: [{ productId: 'p1', quantity: 1 }, { productId: 'p2', quantity: 1 }], total: 90000000, status: 'completed', date: '2023-07-15' },
+  { id: 'ord2', userId: 'mock-uid-1', items: [{ productId: 'p5', quantity: 1 }], total: 45000000, status: 'paid', date: '2024-05-20' },
 ];
 
 export const blogPosts = [
-  { id: 'b1', title: '5 Tips Memilih Venue Pernikahan yang Tepat', excerpt: 'Memilih venue adalah salah satu keputusan terbesar dalam perencanaan pernikahan...', image: getImage('blog-1'), link: '#' },
-  { id: 'b2', title: 'Panduan Lengkap Negosiasi dengan Vendor Pernikahan', excerpt: 'Dapatkan harga terbaik tanpa mengorbankan kualitas. Pelajari cara negosiasi yang efektif...', image: getImage('blog-2'), link: '#' },
-  { id: 'b3', title: 'Inspirasi Destinasi Bulan Madu Romantis di Pulau Jawa', excerpt: 'Tidak perlu jauh-jauh, Pulau Jawa menyimpan banyak permata tersembunyi untuk bulan madu...', image: getImage('blog-3'), link: '#' },
+  { id: 'b1', title: '5 Tips Memilih Venue Pernikahan yang Tepat', excerpt: 'Memilih venue adalah salah satu keputusan terbesar dalam perencanaan pernikahan...', image: getImage('blog-1'), link: '/blog/5-tips-memilih-venue-pernikahan' },
+  { id: 'b2', title: 'Panduan Lengkap Negosiasi dengan Vendor Pernikahan', excerpt: 'Dapatkan harga terbaik tanpa mengorbankan kualitas. Pelajari cara negosiasi yang efektif...', image: getImage('blog-2'), link: '/blog/panduan-negosiasi-vendor' },
+  { id: 'b3', title: 'Inspirasi Destinasi Bulan Madu Romantis di Pulau Jawa', excerpt: 'Tidak perlu jauh-jauh, Pulau Jawa menyimpan banyak permata tersembunyi untuk bulan madu...', image: getImage('blog-3'), link: '/blog/destinasi-bulan-madu' },
 ];

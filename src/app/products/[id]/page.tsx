@@ -14,6 +14,9 @@ import { ContactVendorButton } from "@/components/pages/product-detail/contact-v
 import { ReviewSection } from "@/components/pages/product-detail/review-section";
 import { MapPin, Building } from "lucide-react";
 import type { Product, Vendor } from "@/lib/types";
+import { RelatedProducts } from "@/components/pages/product-detail/related-products";
+import { Suspense } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const products = await getProducts();
@@ -42,7 +45,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
   const productReviews = reviews.filter((r) => r.productId === product.id);
 
   return (
-    <div className="container py-12">
+    <div className="container py-12 space-y-12">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12">
         <div>
           <div className="relative aspect-square w-full overflow-hidden rounded-lg border">
@@ -127,12 +130,38 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
         </div>
       </div>
       
-      <Separator className="my-12" />
+      <Separator />
       
       <ReviewSection reviews={productReviews} />
 
+      <Separator />
+
+      <Suspense fallback={<RelatedProductsSkeleton />}>
+        <RelatedProducts currentProductId={product.id} category={product.category} />
+      </Suspense>
+
     </div>
   );
+}
+
+function RelatedProductsSkeleton() {
+  return (
+    <section>
+      <h2 className="text-3xl font-headline font-bold text-center mb-8">
+        Direkomendasikan untuk Anda
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i} className="space-y-4">
+            <Skeleton className="h-48 w-full" />
+            <Skeleton className="h-4 w-1/4" />
+            <Skeleton className="h-6 w-3/4" />
+            <Skeleton className="h-4 w-1/2" />
+          </div>
+        ))}
+      </div>
+    </section>
+  )
 }
 
 export async function generateStaticParams() {
