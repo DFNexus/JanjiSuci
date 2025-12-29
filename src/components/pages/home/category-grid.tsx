@@ -16,10 +16,10 @@ export function CategoryGrid() {
           const IconComponent = LucideIcons[category.icon as IconName] as React.ElementType;
           return (
             <Link key={category.slug} href={`/products?category=${category.slug}`} className="group">
-              <Card className="h-full transition-all hover:bg-accent hover:shadow-lg">
+              <Card className="h-full transition-all duration-200 ease-in-out hover:bg-destructive hover:shadow-lg">
                 <CardContent className="p-4 flex flex-col items-center justify-center gap-2 aspect-square">
-                  {IconComponent && <IconComponent className="h-8 w-8 text-primary" />}
-                  <span className="text-sm font-medium text-center">{category.name}</span>
+                  {IconComponent && <IconComponent className="h-8 w-8 text-primary transition-colors group-hover:text-destructive-foreground" />}
+                  <span className="text-sm font-medium text-center text-foreground transition-colors group-hover:text-destructive-foreground">{category.name}</span>
                 </CardContent>
               </Card>
             </Link>
