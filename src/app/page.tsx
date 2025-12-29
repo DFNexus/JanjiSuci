@@ -1,9 +1,10 @@
 
 import { CategoryGrid } from "@/components/pages/home/category-grid";
-import { FeaturedProducts } from "@/components/pages/home/featured-products";
+import { CategoryProductSection } from "@/components/pages/home/category-product-section";
 import { HeroSection } from "@/components/pages/home/hero-section";
 import { PromoSlider } from "@/components/pages/home/promo-slider";
 import { Separator } from "@/components/ui/separator";
+import { categories } from "@/lib/mock-data";
 
 export default function Home() {
   return (
@@ -14,7 +15,9 @@ export default function Home() {
         <Separator />
         <PromoSlider />
         <Separator />
-        <FeaturedProducts />
+        {categories.map((category) => (
+            <CategoryProductSection key={category.slug} category={category} />
+        ))}
       </div>
     </div>
   );
