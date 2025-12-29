@@ -5,6 +5,13 @@ import type { Product } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 interface CategoryProductSectionProps {
     category: {
@@ -17,8 +24,7 @@ export async function CategoryProductSection({ category }: CategoryProductSectio
   const allProducts = await getProducts();
   const categoryProducts = allProducts
     .filter(p => p.category === category.name)
-    .sort((a, b) => b.reviewCount - a.reviewCount) // Sort by popularity
-    .slice(0, 4);
+    .sort((a, b) => b.reviewCount - a.reviewCount); // Sort by popularity
 
   if (categoryProducts.length === 0) {
     return null;
@@ -26,21 +32,38 @@ export async function CategoryProductSection({ category }: CategoryProductSectio
 
   return (
     <section>
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl font-headline font-bold">
-          Pilihan {category.name} Untukmu
-        </h2>
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h2 className="text-2xl font-headline font-bold">
+            {category.name} di Indonesia
+          </h2>
+          <p className="text-muted-foreground">Lihat Rekomendasi dengan semua budget</p>
+        </div>
         <Link href={`/products?category=${category.slug}`}>
-            <Button variant="outline">
-                Lihat Semua <ArrowRight className="ml-2 h-4 w-4" />
+            <Button variant="link">
+                Lihat semua {category.name} <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
         </Link>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {categoryProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+      <Carousel
+        opts={{
+          align: "start",
+          dragFree: true,
+        }}
+        className="w-full"
+      >
+        <CarouselContent>
+          {categoryProducts.map((product) => (
+            <CarouselItem key={product.id} className="basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5">
+                <div className="p-1">
+                 <ProductCard product={product} />
+                </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious className="absolute left-[-1.5rem] top-1/2 -translate-y-1/2" />
+        <CarouselNext className="absolute right-[-1.5rem] top-1/2 -translate-y-1/2" />
+      </Carousel>
     </section>
   );
 }

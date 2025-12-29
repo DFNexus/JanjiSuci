@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className="flex flex-col space-y-12">
       <HeroSection />
-      <div className="container px-4 sm:px-6 lg:px-8 space-y-12">
+      <div className="container px-4 sm:px-6 lg:px-8 space-y-16">
         <CategoryGrid />
         <Separator />
         <PromoSlider />
