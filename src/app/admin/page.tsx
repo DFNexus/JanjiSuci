@@ -265,7 +265,7 @@ export default function AdminPage() {
         <Card>
             <CardHeader>
                 <CardTitle>Daftar Produk</CardTitle>
-                <CardDescription>Kelola semua produk atau layanan yang ditawarkan.</CardCardDescription>
+                <CardDescription>Kelola semua produk atau layanan yang ditawarkan.</CardDescription>
             </CardHeader>
             <CardContent>
                 <ProductTable products={products} allVendors={vendors} onDelete={handleDeleteProduct} onEdit={handleEditProduct} isLoading={isLoadingData} />
