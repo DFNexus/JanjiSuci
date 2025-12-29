@@ -16,6 +16,7 @@ import { db } from '@/lib/firebase';
 import type { Order, OrderItem } from '@/lib/types';
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
+import Link from 'next/link';
 
 
 const orderFromDoc = (doc: any): Order => {
@@ -138,10 +139,12 @@ export default function ProfilePage() {
                         </CardContent>
                     </Card>
                 )) : (
-                    <div className="text-center py-12 border-2 border-dashed rounded-lg">
-                        <ShoppingBasket className="mx-auto h-12 w-12 text-muted-foreground/50" />
-                        <p className="mt-4 text-muted-foreground">Anda belum memiliki riwayat pesanan.</p>
-                    </div>
+                    <Link href="/products" className="block group">
+                        <div className="text-center py-12 border-2 border-dashed rounded-lg transition-colors duration-300 group-hover:bg-destructive group-hover:border-destructive group-hover:text-destructive-foreground">
+                            <ShoppingBasket className="mx-auto h-12 w-12 text-muted-foreground/50 transition-colors duration-300 group-hover:text-destructive-foreground" />
+                            <p className="mt-4 text-muted-foreground transition-colors duration-300 group-hover:text-destructive-foreground">Anda belum memiliki riwayat pesanan.</p>
+                        </div>
+                    </Link>
                 )}
             </CardContent>
           </Card>
