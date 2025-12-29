@@ -1,4 +1,7 @@
-import { products, vendors, reviews } from "@/lib/mock-data";
+
+import { getProducts } from "@/services/product-service";
+import { getVendors } from "@/services/vendor-service";
+import { reviews } from "@/lib/mock-data";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
@@ -9,9 +12,11 @@ import { formatPrice } from "@/lib/utils";
 import { AddToCartButton } from "@/components/pages/product-detail/add-to-cart-button";
 import { ContactVendorButton } from "@/components/pages/product-detail/contact-vendor-button";
 import { ReviewSection } from "@/components/pages/product-detail/review-section";
-import { MapPin, Building, Tag } from "lucide-react";
+import { MapPin, Building } from "lucide-react";
+import type { Product, Vendor } from "@/lib/types";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
+  const products = await getProducts();
   const product = products.find((p) => p.id === params.id);
   if (!product) {
     return {
@@ -24,14 +29,16 @@ export async function generateMetadata({ params }: { params: { id: string } }) {
   };
 }
 
-export default function ProductDetailPage({ params }: { params: { id: string } }) {
-  const product = products.find((p) => p.id === params.id);
+export default async function ProductDetailPage({ params }: { params: { id: string } }) {
+  const allProducts = await getProducts();
+  const product = allProducts.find((p) => p.id === params.id);
 
   if (!product) {
     notFound();
   }
-
-  const vendor = vendors.find((v) => v.id === product.vendorId);
+  
+  const allVendors = await getVendors();
+  const vendor = allVendors.find((v) => v.id === product.vendorId);
   const productReviews = reviews.filter((r) => r.productId === product.id);
 
   return (
@@ -81,7 +88,6 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
           <Separator />
           
           <div>
-            <p className="text-sm text-muted-foreground">Mulai dari</p>
             <p className="text-4xl font-bold font-headline text-primary">{formatPrice(product.price)}</p>
           </div>
 
@@ -130,6 +136,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
 }
 
 export async function generateStaticParams() {
+  const products = await getProducts();
   return products.map((product) => ({
     id: product.id,
   }));

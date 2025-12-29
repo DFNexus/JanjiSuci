@@ -40,7 +40,6 @@ export function ProductCard({ product }: ProductCardProps) {
             <RatingStars rating={product.rating} reviewCount={product.reviewCount} />
         </div>
         <div className="pt-2 text-right">
-          <p className="text-sm text-muted-foreground">Mulai dari</p>
           <p className="text-xl font-bold font-headline text-primary">{formatPrice(product.price)}</p>
         </div>
       </CardContent>
