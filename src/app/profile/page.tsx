@@ -78,7 +78,7 @@ export default function ProfilePage() {
       <h1 className="text-4xl font-headline font-bold mb-8">Profil Saya</h1>
       <div className="grid gap-8 md:grid-cols-3">
         <div className="md:col-span-1">
-          <Card>
+          <Card className="border-2">
             <CardHeader className="items-center text-center">
               <Avatar className="h-24 w-24 mb-4">
                  <AvatarImage src={user.profileData?.avatar} alt={user.name || 'User'} />
@@ -97,9 +97,6 @@ export default function ProfilePage() {
                   <span>{user.email}</span>
                </div>
                <Separator />
-               <Button variant="outline" className="w-full">
-                    <Edit className="mr-2 h-4 w-4" /> Edit Profil
-                </Button>
                <Button variant="destructive" className="w-full" onClick={() => { logout(); router.push('/') }}>
                     <LogOut className="mr-2 h-4 w-4" /> Keluar
                 </Button>

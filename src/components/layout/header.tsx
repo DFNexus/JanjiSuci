@@ -31,16 +31,9 @@ import { Badge } from '../ui/badge';
 import { Input } from '../ui/input';
 import { Separator } from '../ui/separator';
 
-const topNavLinks = [
-    { href: "#", label: "Menjadi Vendor" },
-]
-
 const mainNavLinks = [
   { href: '/', label: 'Home' },
   { href: '/products', label: 'Store' },
-  { href: '#', label: 'Inspirasi' },
-  { href: '#', label: 'Vendor' },
-  { href: '#', label: 'Event' },
   { href: '/blog', label: 'Blog' },
 ];
 
@@ -100,9 +93,6 @@ export function AppHeader() {
         </div>
         
         <nav className="flex items-center gap-4">
-            <div className="hidden md:flex items-center gap-4">
-                <Link href="#" className="text-sm font-medium text-muted-foreground hover:text-foreground">Menjadi Vendor</Link>
-            </div>
             {user ? (
                 <>
                 <Link href="/cart">

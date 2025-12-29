@@ -15,6 +15,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import type { CustomerInfo } from '@/lib/types';
 import { createOrder } from '@/services/order-service';
+import { CreditCard, Landmark } from 'lucide-react';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart } = useCart();
@@ -22,6 +24,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState('credit-card');
 
   useEffect(() => {
     if (!user) {
@@ -71,14 +74,14 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="container py-12 max-w-4xl mx-auto">
+    <div className="container py-12 max-w-6xl mx-auto">
       <h1 className="text-4xl font-headline font-bold mb-8 text-center">Checkout</h1>
       <form onSubmit={handleSubmitOrder} className="grid md:grid-cols-2 gap-12">
         <div>
             <Card>
                 <CardHeader>
-                    <CardTitle>Informasi Pengiriman</CardTitle>
-                    <CardDescription>Masukkan detail Anda untuk pengiriman dan kontak.</CardDescription>
+                    <CardTitle>Informasi Pelanggan</CardTitle>
+                    <CardDescription>Masukkan detail Anda untuk keperluan pesanan.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                     <div className="space-y-2">
@@ -94,9 +97,34 @@ export default function CheckoutPage() {
                         <Input id="email" name="email" type="email" defaultValue={user.email || ''} required readOnly/>
                     </div>
                      <div className="space-y-2">
-                        <Label htmlFor="address">Alamat Pengiriman</Label>
+                        <Label htmlFor="address">Alamat</Label>
                         <Textarea id="address" name="address" required />
                     </div>
+                </CardContent>
+            </Card>
+
+            <Card className="mt-8">
+                 <CardHeader>
+                    <CardTitle>Metode Pembayaran</CardTitle>
+                    <CardDescription>Pilih metode pembayaran yang Anda inginkan.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                     <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid gap-4">
+                        <Label htmlFor="credit-card" className="flex items-start gap-4 rounded-md border p-4 cursor-pointer hover:bg-accent has-[[data-state=checked]]:border-primary">
+                            <RadioGroupItem value="credit-card" id="credit-card" className="mt-1" />
+                            <div className="grid gap-1">
+                                <span className="font-bold flex items-center"><CreditCard className="mr-2 h-5 w-5" />Kartu Kredit / Debit</span>
+                                <span className="text-sm text-muted-foreground">Pembayaran aman dengan kartu Visa, MasterCard, dan lainnya.</span>
+                            </div>
+                        </Label>
+                         <Label htmlFor="bank-transfer" className="flex items-start gap-4 rounded-md border p-4 cursor-pointer hover:bg-accent has-[[data-state=checked]]:border-primary">
+                            <RadioGroupItem value="bank-transfer" id="bank-transfer" className="mt-1" />
+                            <div className="grid gap-1">
+                                <span className="font-bold flex items-center"><Landmark className="mr-2 h-5 w-5" />Transfer Bank</span>
+                                <span className="text-sm text-muted-foreground">Lakukan pembayaran melalui transfer ke rekening virtual.</span>
+                            </div>
+                        </Label>
+                     </RadioGroup>
                 </CardContent>
             </Card>
         </div>
