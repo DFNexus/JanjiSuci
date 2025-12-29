@@ -11,15 +11,15 @@ const PRODUCTS_COLLECTION = 'products';
 const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>): Promise<Product> => {
     const data = docSnapshot.data();
     let vendorLocation = 'N/A';
-    let vendorCategory = data.category; // fallback to product's own category
-
+    
+    // The product's category is now directly on the product document.
+    // The vendor's location still needs to be fetched.
     if (data.vendorId) {
         try {
             const vendorRef = doc(db, 'vendors', data.vendorId);
             const vendorSnap = await getDoc(vendorRef);
             if (vendorSnap.exists()) {
                 vendorLocation = vendorSnap.data().location;
-                vendorCategory = vendorSnap.data().category;
             }
         } catch (error) {
             console.error("Error fetching vendor for product:", docSnapshot.id, error);
@@ -29,7 +29,7 @@ const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>):
     return {
         id: docSnapshot.id,
         vendorId: data.vendorId,
-        category: vendorCategory,
+        category: data.category, // Use category from product itself
         price: data.price,
         title: data.title,
         description: data.description,
@@ -81,5 +81,3 @@ export async function updateProduct(id: string, productData: Partial<ProductInpu
 export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
 }
-
-    

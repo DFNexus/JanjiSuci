@@ -12,11 +12,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { categories, javaLocations } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
-import { addVendor, getVendors, deleteVendor } from '@/services/vendor-service';
-import { addProduct, getProducts, deleteProduct } from '@/services/product-service';
-import type { Vendor, Product } from '@/lib/types';
+import { addVendor, getVendors, deleteVendor, updateVendor } from '@/services/vendor-service';
+import { addProduct, getProducts, deleteProduct, updateProduct } from '@/services/product-service';
+import type { Vendor, Product, VendorInput, ProductInput } from '@/lib/types';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Edit } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import {
   AlertDialog,
@@ -28,7 +28,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import { EditVendorDialog } from '@/components/pages/admin/edit-vendor-dialog';
+import { EditProductDialog } from '@/components/pages/admin/edit-product-dialog';
 
 export default function AdminPage() {
   const { user, loading } = useAuth();
@@ -75,7 +77,7 @@ export default function AdminPage() {
     e.preventDefault();
     setIsSubmitting(true);
     const formData = new FormData(e.target as HTMLFormElement);
-    const vendorData = {
+    const vendorData: VendorInput = {
       name: formData.get('vendorName') as string,
       category: formData.get('vendorCategory') as string,
       location: formData.get('vendorLocation') as string,
@@ -94,6 +96,17 @@ export default function AdminPage() {
       setIsSubmitting(false);
     }
   };
+
+  const handleEditVendor = async (id: string, vendorData: Partial<VendorInput>) => {
+    try {
+      await updateVendor(id, vendorData);
+      toast({ title: 'Sukses', description: 'Vendor berhasil diperbarui.'});
+      fetchAllData();
+    } catch (error) {
+      console.error("Error updating vendor:", error);
+      toast({ title: 'Error', description: 'Gagal memperbarui vendor.', variant: 'destructive' });
+    }
+  }
   
   const handleAddProduct = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -109,7 +122,7 @@ export default function AdminPage() {
         return;
     }
 
-    const productData = {
+    const productData: ProductInput = {
         vendorId: vendorId,
         title: formData.get('productTitle') as string,
         price: Number(formData.get('productPrice')),
@@ -126,7 +139,18 @@ export default function AdminPage() {
       console.error("Error adding product: ", error);
       toast({ title: 'Error', description: 'Gagal menambahkan produk.', variant: 'destructive' });
     } finally {
-        setIsSubmitting(false);
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditProduct = async (id: string, productData: Partial<ProductInput>) => {
+    try {
+      await updateProduct(id, productData);
+      toast({ title: 'Sukses', description: 'Produk berhasil diperbarui.'});
+      fetchAllData();
+    } catch (error) {
+      console.error("Error updating product:", error);
+      toast({ title: 'Error', description: 'Gagal memperbarui produk.', variant: 'destructive' });
     }
   };
 
@@ -201,7 +225,7 @@ export default function AdminPage() {
           <CardContent>
              <form onSubmit={handleAddProduct} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="productVendor">Vendor</Label>
+                <Label htmlFor="productVendor">Pilih Vendor yang Sudah Ada</Label>
                 <Select name="productVendor" required disabled={vendors.length === 0}>
                   <SelectTrigger><SelectValue placeholder={vendors.length > 0 ? "Pilih Vendor" : "Belum ada vendor"} /></SelectTrigger>
                   <SelectContent>{vendors.map(v => <SelectItem key={v.id} value={v.id}>{v.name}</SelectItem>)}</SelectContent>
@@ -234,17 +258,17 @@ export default function AdminPage() {
                 <CardDescription>Kelola semua vendor yang terdaftar di platform.</CardDescription>
             </CardHeader>
             <CardContent>
-                <VendorTable vendors={vendors} onDelete={handleDeleteVendor} isLoading={isLoadingData} />
+                <VendorTable vendors={vendors} onDelete={handleDeleteVendor} onEdit={handleEditVendor} isLoading={isLoadingData} />
             </CardContent>
         </Card>
         
         <Card>
             <CardHeader>
                 <CardTitle>Daftar Produk</CardTitle>
-                <CardDescription>Kelola semua produk atau layanan yang ditawarkan.</CardDescription>
+                <CardDescription>Kelola semua produk atau layanan yang ditawarkan.</CardCardDescription>
             </CardHeader>
             <CardContent>
-                <ProductTable products={products} onDelete={handleDeleteProduct} isLoading={isLoadingData} />
+                <ProductTable products={products} allVendors={vendors} onDelete={handleDeleteProduct} onEdit={handleEditProduct} isLoading={isLoadingData} />
             </CardContent>
         </Card>
       </div>
@@ -253,7 +277,7 @@ export default function AdminPage() {
   );
 }
 
-function VendorTable({ vendors, onDelete, isLoading }: { vendors: Vendor[], onDelete: (id: string) => void, isLoading: boolean }) {
+function VendorTable({ vendors, onDelete, onEdit, isLoading }: { vendors: Vendor[], onDelete: (id: string) => void, onEdit: (id: string, data: Partial<VendorInput>) => void, isLoading: boolean }) {
     if (isLoading) return <p>Memuat data vendor...</p>
     if (vendors.length === 0) return <p className="text-muted-foreground text-center">Belum ada vendor.</p>
 
@@ -275,7 +299,8 @@ function VendorTable({ vendors, onDelete, isLoading }: { vendors: Vendor[], onDe
                         <TableCell>{vendor.category}</TableCell>
                         <TableCell>{vendor.location}</TableCell>
                         <TableCell>{vendor.whatsappNumber}</TableCell>
-                        <TableCell className="text-right">
+                        <TableCell className="text-right flex items-center justify-end gap-2">
+                           <EditVendorDialog vendor={vendor} onSave={(data) => onEdit(vendor.id, data)} />
                            <DeleteButton onConfirm={() => onDelete(vendor.id)} />
                         </TableCell>
                     </TableRow>
@@ -285,15 +310,9 @@ function VendorTable({ vendors, onDelete, isLoading }: { vendors: Vendor[], onDe
     )
 }
 
-function ProductTable({ products, onDelete, isLoading }: { products: Product[], onDelete: (id: string) => void, isLoading: boolean }) {
-    const [allVendors, setAllVendors] = useState<Vendor[]>([]);
-
-    useEffect(() => {
-        getVendors().then(setAllVendors);
-    }, []);
-
-    const getVendorInfo = (vendorId: string) => {
-        return allVendors.find(v => v.id === vendorId);
+function ProductTable({ products, allVendors, onDelete, onEdit, isLoading }: { products: Product[], allVendors: Vendor[], onDelete: (id: string) => void, onEdit: (id: string, data: Partial<ProductInput>) => void, isLoading: boolean }) {
+    const getVendorName = (vendorId: string) => {
+        return allVendors.find(v => v.id === vendorId)?.name || 'N/A';
     }
 
     if (isLoading) return <p>Memuat data produk...</p>
@@ -311,20 +330,18 @@ function ProductTable({ products, onDelete, isLoading }: { products: Product[], 
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {products.map(product => {
-                    const vendor = getVendorInfo(product.vendorId);
-                    return (
-                        <TableRow key={product.id}>
-                            <TableCell className="font-medium">{product.title}</TableCell>
-                            <TableCell>{vendor?.name || 'N/A'}</TableCell>
-                            <TableCell>{product.category}</TableCell>
-                            <TableCell>{formatPrice(product.price)}</TableCell>
-                            <TableCell className="text-right">
-                               <DeleteButton onConfirm={() => onDelete(product.id)} />
-                            </TableCell>
-                        </TableRow>
-                    )
-                })}
+                {products.map(product => (
+                    <TableRow key={product.id}>
+                        <TableCell className="font-medium">{product.title}</TableCell>
+                        <TableCell>{getVendorName(product.vendorId)}</TableCell>
+                        <TableCell>{product.category}</TableCell>
+                        <TableCell>{formatPrice(product.price)}</TableCell>
+                        <TableCell className="text-right flex items-center justify-end gap-2">
+                           <EditProductDialog product={product} allVendors={allVendors} onSave={(data) => onEdit(product.id, data)}/>
+                           <DeleteButton onConfirm={() => onDelete(product.id)} />
+                        </TableCell>
+                    </TableRow>
+                ))}
             </TableBody>
         </Table>
     )
@@ -353,5 +370,3 @@ function DeleteButton({ onConfirm }: { onConfirm: () => void }) {
     </AlertDialog>
   )
 }
-
-    
