@@ -1,3 +1,4 @@
+console.log("TEST API KEY:", process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
 import { CategoryGrid } from "@/components/pages/home/category-grid";
 import { FeaturedProducts } from "@/components/pages/home/featured-products";
 import { HeroSection } from "@/components/pages/home/hero-section";
