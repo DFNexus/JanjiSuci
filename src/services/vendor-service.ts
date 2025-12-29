@@ -4,7 +4,6 @@
 import { db } from '@/lib/firebase';
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, DocumentData, QueryDocumentSnapshot } from 'firebase/firestore';
 import type { Vendor, VendorInput } from '@/lib/types';
-import { vendors as mockVendors } from '@/lib/mock-data';
 
 const VENDORS_COLLECTION = 'vendors';
 
@@ -38,15 +37,8 @@ export async function addVendor(vendorData: VendorInput): Promise<Vendor> {
 
 // Read - Now returns mock data
 export async function getVendors(): Promise<Vendor[]> {
-  // To use Firestore data again, comment out the following line
-  // and uncomment the original Firestore logic.
-  return Promise.resolve(mockVendors);
-  
-  /*
-  // Original Firestore Logic
   const querySnapshot = await getDocs(collection(db, VENDORS_COLLECTION));
   return querySnapshot.docs.map(vendorFromDoc);
-  */
 }
 
 // Update - This still updates Firestore

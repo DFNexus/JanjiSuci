@@ -4,7 +4,6 @@
 import { db } from '@/lib/firebase';
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, DocumentData, QueryDocumentSnapshot, getDoc } from 'firebase/firestore';
 import type { Product, ProductInput } from '@/lib/types';
-import { products as mockProducts } from '@/lib/mock-data';
 import { getVendors } from './vendor-service';
 
 const PRODUCTS_COLLECTION = 'products';
@@ -17,10 +16,11 @@ const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>):
     
     if (data.vendorId) {
         try {
-            const vendorRef = doc(db, 'vendors', data.vendorId);
-            const vendorSnap = await getDoc(vendorRef);
-            if (vendorSnap.exists()) {
-                vendorLocation = vendorSnap.data().location;
+            // Since getVendors now reads from Firestore, we can use it to find the location
+            const vendors = await getVendors();
+            const vendor = vendors.find(v => v.id === data.vendorId);
+            if (vendor) {
+                vendorLocation = vendor.location;
             }
         } catch (error) {
             console.error("Error fetching vendor for product:", docSnapshot.id, error);
@@ -58,12 +58,6 @@ export async function addProduct(productData: ProductInput): Promise<string> {
 
 // Read - Now returns mock data
 export async function getProducts(): Promise<Product[]> {
-  // To use Firestore data again, comment out the following line
-  // and uncomment the original Firestore logic.
-  return Promise.resolve(mockProducts);
-
-  /*
-  // Original Firestore Logic
   try {
     const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
     if (querySnapshot.empty) {
@@ -76,7 +70,6 @@ export async function getProducts(): Promise<Product[]> {
       console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products from Firestore.");
   }
-  */
 }
 
 // Update - This still updates Firestore
@@ -89,3 +82,4 @@ export async function updateProduct(id: string, productData: Partial<ProductInpu
 export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
 }
+
