@@ -1,3 +1,4 @@
+
 "use client";
 
 import Image from 'next/image';
@@ -11,6 +12,7 @@ import { formatPrice } from '@/lib/utils';
 import { ShoppingCart, Trash2, Calendar } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
 
 export default function CartPage() {
   const { cartItems, updateQuantity, removeFromCart, cartTotal, cartCount } = useCart();
@@ -54,9 +56,9 @@ export default function CartPage() {
                   </Link>
                   <p className="text-sm text-muted-foreground">{product.category}</p>
                    {bookingDate && (
-                    <div className="flex items-center text-sm text-muted-foreground mt-1">
+                    <div className="flex items-center text-sm text-accent-foreground font-medium mt-1 bg-accent/30 rounded-md px-2 py-1 w-fit">
                       <Calendar className="mr-1.5 h-4 w-4" />
-                      {format(bookingDate, 'PPP')}
+                      {format(bookingDate, 'PPP', { locale: id })}
                     </div>
                   )}
                   <p className="text-lg font-semibold text-primary mt-1">

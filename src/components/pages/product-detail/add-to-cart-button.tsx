@@ -1,9 +1,9 @@
+
 "use client";
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Calendar as CalendarIcon, ShoppingCart } from 'lucide-react';
-import { format } from 'date-fns';
+import { ShoppingCart } from 'lucide-react';
 
 import { useAuth } from '@/context/auth-context';
 import { useCart } from '@/context/cart-context';
@@ -18,12 +18,9 @@ import {
   DialogTitle,
   DialogDescription,
   DialogFooter,
-  DialogTrigger,
   DialogClose,
 } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { cn } from '@/lib/utils';
 
 interface AddToCartButtonProps {
   product: Product;
@@ -100,7 +97,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
               mode="single"
               selected={bookingDate}
               onSelect={setBookingDate}
-              disabled={(date) => date < new Date() || date < new Date("1900-01-01")}
+              disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
               initialFocus
             />
           </div>
