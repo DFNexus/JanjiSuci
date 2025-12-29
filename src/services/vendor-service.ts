@@ -20,34 +20,30 @@ const vendorFromDoc = (doc: QueryDocumentSnapshot<DocumentData>): Vendor => {
     };
 }
 
-// Create - This still writes to Firestore
 export async function addVendor(vendorData: VendorInput): Promise<Vendor> {
   const docRef = await addDoc(collection(db, VENDORS_COLLECTION), {
     ...vendorData,
-    rating: 0,
-    reviewCount: 0,
+    rating: Math.round((Math.random() * 2 + 3) * 10) / 10, // Random rating between 3.0 and 5.0
+    reviewCount: Math.floor(Math.random() * 200) + 50, // Random review count between 50 and 250
   });
   return {
     id: docRef.id,
     ...vendorData,
-    rating: 0,
+    rating: 0, // Will be overwritten by the get call, but good to have a default
     reviewCount: 0,
   };
 }
 
-// Read - Now returns mock data
 export async function getVendors(): Promise<Vendor[]> {
   const querySnapshot = await getDocs(collection(db, VENDORS_COLLECTION));
   return querySnapshot.docs.map(vendorFromDoc);
 }
 
-// Update - This still updates Firestore
 export async function updateVendor(id: string, vendorData: Partial<VendorInput>): Promise<void> {
   const vendorRef = doc(db, VENDORS_COLLECTION, id);
   await updateDoc(vendorRef, vendorData);
 }
 
-// Delete - This still deletes from Firestore
 export async function deleteVendor(id: string): Promise<void> {
   await deleteDoc(doc(db, VENDORS_COLLECTION, id));
 }

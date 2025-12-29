@@ -8,15 +8,12 @@ import { getVendors } from './vendor-service';
 
 const PRODUCTS_COLLECTION = 'products';
 
-// This function is no longer the primary source of data for getProducts,
-// but is kept for reference or potential future use with Firestore.
 const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>): Promise<Product> => {
     const data = docSnapshot.data();
     let vendorLocation = 'N/A';
     
     if (data.vendorId) {
         try {
-            // Since getVendors now reads from Firestore, we can use it to find the location
             const vendors = await getVendors();
             const vendor = vendors.find(v => v.id === data.vendorId);
             if (vendor) {
@@ -42,21 +39,21 @@ const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>):
     };
 }
 
-
-// Create - This still writes to Firestore
 export async function addProduct(productData: ProductInput): Promise<string> {
+  const { vendorId, ...restOfProductData } = productData;
   const completeProductData = {
-    ...productData,
-    rating: 0,
-    reviewCount: 0,
-    images: ['https://picsum.photos/seed/newproduct/600/400'], // Placeholder image
+    ...restOfProductData,
+    vendorId, // ensure vendorId is included
+    rating: Math.round((Math.random() * 2 + 3) * 10) / 10, // 3.0 to 5.0
+    reviewCount: Math.floor(Math.random() * 200) + 10,
+    images: productData.images && productData.images.length > 0 ? productData.images : ['https://picsum.photos/seed/newproduct/600/400'], 
   };
 
   const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), completeProductData);
   return docRef.id;
 }
 
-// Read - Now returns mock data
+
 export async function getProducts(): Promise<Product[]> {
   try {
     const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
@@ -72,14 +69,11 @@ export async function getProducts(): Promise<Product[]> {
   }
 }
 
-// Update - This still updates Firestore
 export async function updateProduct(id: string, productData: Partial<ProductInput>): Promise<void> {
   const productRef = doc(db, PRODUCTS_COLLECTION, id);
   await updateDoc(productRef, productData);
 }
 
-// Delete - This still deletes from Firestore
 export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
 }
-
