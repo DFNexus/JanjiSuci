@@ -1,3 +1,4 @@
+
 export type User = {
   uid: string;
   email: string | null;
@@ -52,13 +53,30 @@ export type CartItem = {
   bookingDate?: Date;
 };
 
+export type CustomerInfo = {
+  fullName: string;
+  phoneNumber: string;
+  email: string;
+  shippingAddress: string;
+}
+
+export type OrderItem = {
+    productId: string;
+    productName: string;
+    vendorId: string;
+    price: number;
+    quantity: number;
+    bookingDate?: Date | string; 
+};
+
 export type Order = {
   id: string;
-  userId: string;
-  items: CartItem[];
+  customerInfo: CustomerInfo;
+  items: OrderItem[];
   total: number;
   status: 'pending' | 'paid' | 'completed' | 'cancelled';
-  date: string;
+  timestamp: Date;
+  userId?: string; // To associate order with a user
 };
 
 // Types for Firestore data manipulation

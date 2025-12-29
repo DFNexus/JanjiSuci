@@ -89,7 +89,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
           <DialogHeader>
             <DialogTitle>Pilih Tanggal Pemesanan</DialogTitle>
             <DialogDescription>
-              Pilih tanggal untuk layanan "{product.title}".
+              Pilih tanggal untuk layanan "{product.title}". Tanggal yang dipilih akan ditandai.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 flex justify-center">
@@ -99,6 +99,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
               onSelect={setBookingDate}
               disabled={(date) => date < new Date(new Date().setDate(new Date().getDate() - 1))}
               initialFocus
+              className="rounded-md border"
             />
           </div>
           <DialogFooter>

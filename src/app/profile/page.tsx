@@ -8,32 +8,61 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { User, Mail, Edit, LogOut } from 'lucide-react';
-import { mockOrders, products } from '@/lib/mock-data';
-import type { Order, CartItem } from '@/lib/types';
+import { User, Mail, Edit, LogOut, ShoppingBasket } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import type { Order, OrderItem } from '@/lib/types';
+import { format } from 'date-fns';
+import { id } from 'date-fns/locale';
+
+
+const orderFromDoc = (doc: any): Order => {
+  const data = doc.data();
+  return {
+    id: doc.id,
+    customerInfo: data.customerInfo,
+    items: data.items,
+    total: data.total,
+    status: data.status,
+    timestamp: data.timestamp.toDate(),
+    userId: data.userId,
+  };
+};
 
 export default function ProfilePage() {
   const { user, logout, loading } = useAuth();
   const router = useRouter();
   const [userOrders, setUserOrders] = useState<Order[]>([]);
+  const [isLoadingOrders, setIsLoadingOrders] = useState(true);
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/login?redirect=/profile');
-    } else if (user) {
-      // Filter orders based on the current user's ID
-      const fetchedOrders = mockOrders.filter(order => order.userId === user.uid).map(order => ({
-        ...order,
-        items: order.items.map(item => {
-            const product = products.find(p => p.id === item.productId);
-            // This assertion is risky if a product can be deleted, but we'll assume it exists for now.
-            return { product: product!, quantity: item.quantity };
-        }).filter(item => item.product) as CartItem[],
-      }));
-      setUserOrders(fetchedOrders);
+      return;
     }
+
+    const fetchOrders = async () => {
+      if (!user) return;
+      setIsLoadingOrders(true);
+      try {
+        const ordersRef = collection(db, 'orders');
+        const q = query(ordersRef, where('userId', '==', user.uid), orderBy('timestamp', 'desc'));
+        const querySnapshot = await getDocs(q);
+        const fetchedOrders = querySnapshot.docs.map(orderFromDoc);
+        setUserOrders(fetchedOrders);
+      } catch (error) {
+        console.error("Error fetching orders: ", error);
+      } finally {
+        setIsLoadingOrders(false);
+      }
+    };
+    
+    if(user) {
+        fetchOrders();
+    }
+
   }, [user, loading, router]);
 
   if (loading || !user) {
@@ -80,39 +109,42 @@ export default function ProfilePage() {
         <div className="md:col-span-2">
           <Card>
             <CardHeader>
-              <CardTitle>Riwayat Pesanan</CardTitle>
+              <CardTitle>Riwayat Pesanan Saya</CardTitle>
               <CardDescription>Daftar semua transaksi yang pernah Anda lakukan.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
-                {userOrders.length > 0 ? userOrders.map(order => (
+                {isLoadingOrders ? (
+                  <p>Memuat riwayat pesanan...</p>
+                ) : userOrders.length > 0 ? userOrders.map(order => (
                     <Card key={order.id} className="bg-secondary/50">
-                        <CardHeader className="pb-2">
+                        <CardHeader className="pb-2 flex-row justify-between items-start">
                            <div>
-                            <p className="font-semibold">Order #{order.id}</p>
-                            <p className="text-sm text-muted-foreground">{new Date(order.date).toLocaleDateString()}</p>
+                            <p className="font-semibold">Order #{order.id.substring(0, 7)}</p>
+                            <p className="text-sm text-muted-foreground">{format(order.timestamp, 'PPP', { locale: id })}</p>
                            </div>
+                           <Badge variant={order.status === 'completed' ? 'default' : 'secondary'} className="capitalize">{order.status}</Badge>
                         </CardHeader>
                         <CardContent>
                             <div className="space-y-2">
-                                {order.items.map(item => (
-                                    <div key={item.product.id} className="text-sm flex justify-between">
-                                        <span>{item.product.title} x {item.quantity}</span>
-                                        <span>{formatPrice(item.product.price * item.quantity)}</span>
+                                {order.items.map((item: OrderItem) => (
+                                    <div key={item.productId} className="text-sm flex justify-between">
+                                        <span>{item.productName} x {item.quantity}</span>
+                                        <span>{formatPrice(item.price * item.quantity)}</span>
                                     </div>
                                 ))}
                             </div>
                             <Separator className="my-2" />
-                            <div className="flex justify-between items-center">
-                                <div className="font-semibold">
-                                    <span>Total: </span>
-                                    <span>{formatPrice(order.total)}</span>
-                                </div>
-                                <Badge variant={order.status === 'completed' ? 'default' : 'secondary'}>{order.status}</Badge>
+                            <div className="flex justify-between items-center font-semibold">
+                                <span>Total: </span>
+                                <span>{formatPrice(order.total)}</span>
                             </div>
                         </CardContent>
                     </Card>
                 )) : (
-                    <p className="text-muted-foreground text-center py-8">Anda belum memiliki riwayat pesanan.</p>
+                    <div className="text-center py-12 border-2 border-dashed rounded-lg">
+                        <ShoppingBasket className="mx-auto h-12 w-12 text-muted-foreground/50" />
+                        <p className="mt-4 text-muted-foreground">Anda belum memiliki riwayat pesanan.</p>
+                    </div>
                 )}
             </CardContent>
           </Card>
@@ -121,5 +153,3 @@ export default function ProfilePage() {
     </div>
   );
 }
-
-    

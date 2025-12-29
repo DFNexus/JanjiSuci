@@ -1,40 +1,69 @@
+
 "use client";
 
 import { useCart } from '@/context/cart-context';
 import { useAuth } from '@/context/auth-context';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { formatPrice } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Banknote } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import type { CustomerInfo } from '@/lib/types';
+import { createOrder } from '@/services/order-service';
 
 export default function CheckoutPage() {
   const { cartItems, cartTotal, clearCart } = useCart();
   const { user } = useAuth();
   const router = useRouter();
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     if (!user) {
+      toast({ title: "Login Diperlukan", description: "Silakan login untuk melanjutkan.", variant: "destructive" });
       router.push('/login?redirect=/checkout');
     }
     if (cartItems.length === 0) {
       router.push('/products');
     }
-  }, [user, cartItems, router]);
+  }, [user, cartItems, router, toast]);
 
-  const handlePayment = () => {
-    // Mock payment processing
-    toast({
-      title: "Pembayaran Berhasil!",
-      description: "Pesanan Anda telah dikonfirmasi. Terima kasih!",
-    });
-    clearCart();
-    router.push('/profile');
+  const handleSubmitOrder = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!user) return;
+    setIsSubmitting(true);
+    
+    const formData = new FormData(e.currentTarget);
+    const customerInfo: CustomerInfo = {
+      fullName: formData.get('fullName') as string,
+      phoneNumber: formData.get('phoneNumber') as string,
+      email: user.email || '',
+      shippingAddress: formData.get('address') as string,
+    };
+
+    try {
+      await createOrder({ customerInfo, cartItems, userId: user.uid, total: cartTotal });
+      toast({
+        title: "Pesanan Berhasil Diterima!",
+        description: "Pesanan Anda telah kami terima dan sedang diproses.",
+      });
+      clearCart();
+      router.push('/profile');
+    } catch (error) {
+      console.error("Error creating order:", error);
+      toast({
+        title: "Terjadi Kesalahan",
+        description: "Gagal membuat pesanan. Silakan coba lagi.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   if (!user || cartItems.length === 0) {
@@ -44,7 +73,34 @@ export default function CheckoutPage() {
   return (
     <div className="container py-12 max-w-4xl mx-auto">
       <h1 className="text-4xl font-headline font-bold mb-8 text-center">Checkout</h1>
-      <div className="grid md:grid-cols-2 gap-8">
+      <form onSubmit={handleSubmitOrder} className="grid md:grid-cols-2 gap-12">
+        <div>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Informasi Pengiriman</CardTitle>
+                    <CardDescription>Masukkan detail Anda untuk pengiriman dan kontak.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="fullName">Nama Lengkap</Label>
+                        <Input id="fullName" name="fullName" defaultValue={user.name || ''} required />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="phoneNumber">Nomor Telepon</Label>
+                        <Input id="phoneNumber" name="phoneNumber" type="tel" required />
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input id="email" name="email" type="email" defaultValue={user.email || ''} required readOnly/>
+                    </div>
+                     <div className="space-y-2">
+                        <Label htmlFor="address">Alamat Pengiriman</Label>
+                        <Textarea id="address" name="address" required />
+                    </div>
+                </CardContent>
+            </Card>
+        </div>
+
         <div>
           <Card>
             <CardHeader>
@@ -74,40 +130,17 @@ export default function CheckoutPage() {
                 </div>
               </div>
             </CardContent>
-          </Card>
-        </div>
-
-        <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Informasi Pembayaran</CardTitle>
-              <CardDescription>
-                Silakan lakukan pembayaran melalui transfer bank.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <Alert>
-                    <Banknote className="h-4 w-4" />
-                    <AlertTitle>Transfer Bank</AlertTitle>
-                    <AlertDescription className="space-y-2 mt-2">
-                        <p><strong>Bank Janji Suci (BCA)</strong></p>
-                        <p>No. Rekening: <strong>123-456-7890</strong></p>
-                        <p>Atas Nama: <strong>PT Janji Suci Jaya</strong></p>
-                        <p>Total: <strong className="text-primary">{formatPrice(cartTotal)}</strong></p>
-                    </AlertDescription>
-                </Alert>
-                <p className="text-xs text-muted-foreground mt-4">
-                Pesanan Anda akan diproses setelah kami menerima bukti pembayaran. Harap konfirmasi pembayaran Anda ke admin kami.
-                </p>
-            </CardContent>
             <CardFooter>
-              <Button className="w-full" onClick={handlePayment}>
-                Saya Sudah Membayar
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? 'Memproses Pesanan...' : `Bayar & Pesan (${formatPrice(cartTotal)})`}
               </Button>
             </CardFooter>
           </Card>
+           <p className="text-xs text-muted-foreground mt-4 text-center">
+                Dengan melanjutkan, Anda menyetujui Syarat & Ketentuan kami. Pembayaran akan disimulasikan.
+            </p>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
