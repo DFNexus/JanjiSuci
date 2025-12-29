@@ -4,16 +4,17 @@
 import { db } from '@/lib/firebase';
 import { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, DocumentData, QueryDocumentSnapshot, getDoc } from 'firebase/firestore';
 import type { Product, ProductInput } from '@/lib/types';
+import { products as mockProducts } from '@/lib/mock-data';
 import { getVendors } from './vendor-service';
 
 const PRODUCTS_COLLECTION = 'products';
 
+// This function is no longer the primary source of data for getProducts,
+// but is kept for reference or potential future use with Firestore.
 const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>): Promise<Product> => {
     const data = docSnapshot.data();
     let vendorLocation = 'N/A';
     
-    // The product's category is now directly on the product document.
-    // The vendor's location still needs to be fetched.
     if (data.vendorId) {
         try {
             const vendorRef = doc(db, 'vendors', data.vendorId);
@@ -29,7 +30,7 @@ const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>):
     return {
         id: docSnapshot.id,
         vendorId: data.vendorId,
-        category: data.category, // Use category from product itself
+        category: data.category,
         price: data.price,
         title: data.title,
         description: data.description,
@@ -42,7 +43,7 @@ const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>):
 }
 
 
-// Create
+// Create - This still writes to Firestore
 export async function addProduct(productData: ProductInput): Promise<string> {
   const completeProductData = {
     ...productData,
@@ -55,8 +56,14 @@ export async function addProduct(productData: ProductInput): Promise<string> {
   return docRef.id;
 }
 
-// Read
+// Read - Now returns mock data
 export async function getProducts(): Promise<Product[]> {
+  // To use Firestore data again, comment out the following line
+  // and uncomment the original Firestore logic.
+  return Promise.resolve(mockProducts);
+
+  /*
+  // Original Firestore Logic
   try {
     const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
     if (querySnapshot.empty) {
@@ -69,15 +76,16 @@ export async function getProducts(): Promise<Product[]> {
       console.error("Error fetching products:", error);
       throw new Error("Failed to fetch products from Firestore.");
   }
+  */
 }
 
-// Update
+// Update - This still updates Firestore
 export async function updateProduct(id: string, productData: Partial<ProductInput>): Promise<void> {
   const productRef = doc(db, PRODUCTS_COLLECTION, id);
   await updateDoc(productRef, productData);
 }
 
-// Delete
+// Delete - This still deletes from Firestore
 export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
 }
