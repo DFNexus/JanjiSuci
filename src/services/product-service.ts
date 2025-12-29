@@ -12,16 +12,12 @@ const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>):
     const data = docSnapshot.data();
     let vendorLocation = 'N/A';
     
-    if (data.vendorId) {
-        try {
-            const vendors = await getVendors();
-            const vendor = vendors.find(v => v.id === data.vendorId);
-            if (vendor) {
-                vendorLocation = vendor.location;
-            }
-        } catch (error) {
-            console.error("Error fetching vendor for product:", docSnapshot.id, error);
-        }
+    // This check is important. If getVendors is not memoized, this can be slow.
+    // For this project, it's okay as vendor list is small.
+    const vendors = await getVendors();
+    const vendor = vendors.find(v => v.id === data.vendorId);
+    if (vendor) {
+        vendorLocation = vendor.location;
     }
 
     return {
@@ -77,3 +73,5 @@ export async function updateProduct(id: string, productData: Partial<ProductInpu
 export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
 }
+
+    

@@ -21,16 +21,18 @@ const vendorFromDoc = (doc: QueryDocumentSnapshot<DocumentData>): Vendor => {
 }
 
 export async function addVendor(vendorData: VendorInput): Promise<Vendor> {
-  const docRef = await addDoc(collection(db, VENDORS_COLLECTION), {
+  const completeVendorData = {
     ...vendorData,
     rating: Math.round((Math.random() * 2 + 3) * 10) / 10, // Random rating between 3.0 and 5.0
     reviewCount: Math.floor(Math.random() * 200) + 50, // Random review count between 50 and 250
-  });
+  };
+  const docRef = await addDoc(collection(db, VENDORS_COLLECTION), completeVendorData);
+  const { rating, reviewCount } = completeVendorData;
   return {
     id: docRef.id,
     ...vendorData,
-    rating: 0, // Will be overwritten by the get call, but good to have a default
-    reviewCount: 0,
+    rating,
+    reviewCount,
   };
 }
 
@@ -47,3 +49,5 @@ export async function updateVendor(id: string, vendorData: Partial<VendorInput>)
 export async function deleteVendor(id: string): Promise<void> {
   await deleteDoc(doc(db, VENDORS_COLLECTION, id));
 }
+
+    

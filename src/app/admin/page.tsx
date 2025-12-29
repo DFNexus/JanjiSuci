@@ -81,7 +81,7 @@ export default function AdminPage() {
         // Add vendors first and get their new IDs
         const vendorIdMap = new Map<string, string>();
         for (const mockVendor of mockVendors) {
-            const { id: oldId, rating, reviewCount, ...vendorInput } = mockVendor;
+            const { id: oldId, ...vendorInput } = mockVendor;
             const newVendor = await addVendor(vendorInput);
             vendorIdMap.set(oldId, newVendor.id);
         }
@@ -432,3 +432,5 @@ function DeleteButton({ onConfirm }: { onConfirm: () => void }) {
     </AlertDialog>
   )
 }
+
+    
