@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { categories, javaLocations, vendors as mockVendors, products as mockProducts } from '@/lib/mock-data';
+import { categories, javaLocations } from '@/lib/mock-data';
 import { useToast } from '@/hooks/use-toast';
 import { addVendor, getVendors, deleteVendor, updateVendor } from '@/services/vendor-service';
 import { addProduct, getProducts, deleteProduct, updateProduct } from '@/services/product-service';
@@ -40,7 +40,6 @@ export default function AdminPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
-  const [isSeeding, setIsSeeding] = useState(false);
 
   const fetchAllData = async () => {
     setIsLoadingData(true);
@@ -68,43 +67,6 @@ export default function AdminPage() {
         fetchAllData();
     }
   }, [user, loading, router, toast]);
-
-  const handleSeedDatabase = async () => {
-    setIsSeeding(true);
-    toast({ title: 'Memulai Proses Seed', description: 'Menambahkan data vendor dan produk ke database...' });
-
-    try {
-        // Clear existing data to avoid duplicates
-        await Promise.all(products.map(p => deleteProduct(p.id)));
-        await Promise.all(vendors.map(v => deleteVendor(v.id)));
-
-        // Add vendors first and get their new IDs
-        const vendorIdMap = new Map<string, string>();
-        for (const mockVendor of mockVendors) {
-            const { id: oldId, ...vendorInput } = mockVendor;
-            const newVendor = await addVendor(vendorInput);
-            vendorIdMap.set(oldId, newVendor.id);
-        }
-
-        // Add products using the new vendor IDs
-        for (const mockProduct of mockProducts) {
-            const { id, rating, reviewCount, location, ...productInput} = mockProduct;
-            const newVendorId = vendorIdMap.get(productInput.vendorId);
-            if(newVendorId) {
-                await addProduct({ ...productInput, vendorId: newVendorId });
-            }
-        }
-        
-        toast({ title: 'Seed Berhasil!', description: 'Database telah diisi dengan data dummy.' });
-        await fetchAllData();
-    } catch (error) {
-        console.error("Error seeding database: ", error);
-        toast({ title: 'Error', description: 'Gagal melakukan seeding database.', variant: 'destructive' });
-    } finally {
-        setIsSeeding(false);
-    }
-  };
-
 
   if (loading || !user || user.role !== 'admin') {
     return <div className="container py-12 text-center">Memverifikasi akses...</div>;
@@ -223,19 +185,6 @@ export default function AdminPage() {
     <div className="container py-12 space-y-12">
       <div className="flex justify-between items-start">
         <h1 className="text-4xl font-headline font-bold">Admin Dashboard</h1>
-        <Card className="w-auto">
-          <CardHeader className="p-4">
-            <CardTitle className="text-lg">Database Tools</CardTitle>
-          </CardHeader>
-          <CardContent className="p-4 pt-0">
-             <Button onClick={handleSeedDatabase} disabled={isSeeding}>
-              {isSeeding ? 'Seeding Database...' : 'Seed Database with Mock Data'}
-            </Button>
-            <CardDescription className="text-xs mt-2">
-              Populate database with 15 vendors & 45 products. This will delete existing data.
-            </CardDescription>
-          </CardContent>
-        </Card>
       </div>
       
       <div className="grid gap-8 md:grid-cols-2 items-start">
