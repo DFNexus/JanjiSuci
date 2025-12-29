@@ -69,21 +69,19 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
 
   return (
     <>
-      <div className="flex items-center gap-2">
-        <Input
-          id="quantity"
-          type="number"
-          min="1"
-          value={quantity}
-          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-          className="w-20 h-10 text-center"
-          aria-label="Quantity"
-        />
-        <Button onClick={handleAddToCartClick} className="flex-1">
-          <ShoppingCart className="mr-2 h-4 w-4" />
-          Tambah ke Keranjang
-        </Button>
-      </div>
+      <Input
+        id="quantity"
+        type="number"
+        min="1"
+        value={quantity}
+        onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+        className="w-20 h-10 text-center"
+        aria-label="Quantity"
+      />
+      <Button onClick={handleAddToCartClick} className="w-full">
+        <ShoppingCart className="mr-2 h-4 w-4" />
+        Tambah ke Keranjang
+      </Button>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">

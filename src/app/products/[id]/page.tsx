@@ -110,7 +110,7 @@ export default async function ProductDetailPage({ params }: { params: { id: stri
              </Card>
           )}
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-[auto_1fr_1fr] gap-4">
             <AddToCartButton product={product} />
             {vendor && <ContactVendorButton vendor={vendor} />}
           </div>
