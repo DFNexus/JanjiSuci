@@ -14,7 +14,7 @@ export function RatingStars({ rating, reviewCount, className }: RatingStarsProps
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <div className="flex items-center text-accent">
+      <div className="flex items-center text-[color:hsl(var(--star-rating))]">
         {[...Array(fullStars)].map((_, i) => (
           <Star key={`full-${i}`} className="h-4 w-4 fill-current" />
         ))}
