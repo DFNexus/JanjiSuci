@@ -35,7 +35,7 @@ export async function CategoryProductSection({ category }: CategoryProductSectio
       <div className="flex justify-between items-center mb-4">
         <div>
           <h2 className="text-2xl font-headline font-bold">
-            {category.name} di Indonesia
+            {category.name}
           </h2>
           <p className="text-muted-foreground">Lihat Rekomendasi dengan semua budget</p>
         </div>
