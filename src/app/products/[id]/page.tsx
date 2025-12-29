@@ -17,6 +17,7 @@ import type { Product, Vendor } from "@/lib/types";
 import { RelatedProducts } from "@/components/pages/product-detail/related-products";
 import { Suspense } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Input } from "@/components/ui/input";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const products = await getProducts();
