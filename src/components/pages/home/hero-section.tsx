@@ -27,19 +27,6 @@ export function HeroSection() {
         <p className="max-w-2xl text-lg md:text-xl text-slate-200 drop-shadow-md">
           Dari Impian Menjadi Kenyataan
         </p>
-        <form className="w-full max-w-xl mt-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-            <Input
-              type="search"
-              placeholder="Cari layanan, vendor, atau lokasi..."
-              className="w-full rounded-full pl-10 pr-24 h-12 text-base text-foreground"
-            />
-            <Button type="submit" className="absolute right-1.5 top-1/2 -translate-y-1/2 rounded-full h-9">
-              Cari
-            </Button>
-          </div>
-        </form>
       </div>
     </section>
   );
