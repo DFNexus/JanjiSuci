@@ -1,3 +1,4 @@
+
 'use server';
 
 import { db } from '@/lib/firebase';
@@ -7,35 +8,42 @@ import { getVendors } from './vendor-service';
 
 const PRODUCTS_COLLECTION = 'products';
 
-const productFromDoc = async (doc: QueryDocumentSnapshot<DocumentData>): Promise<Product> => {
-    const data = doc.data();
-    const vendorSnapshot = await getDoc(doc(db, 'vendors', data.vendorId));
-    const vendorData = vendorSnapshot.data();
+const productFromDoc = async (docSnapshot: QueryDocumentSnapshot<DocumentData>): Promise<Product> => {
+    const data = docSnapshot.data();
+    let vendorLocation = 'N/A';
+    let vendorCategory = data.category; // fallback to product's own category
+
+    if (data.vendorId) {
+        try {
+            const vendorRef = doc(db, 'vendors', data.vendorId);
+            const vendorSnap = await getDoc(vendorRef);
+            if (vendorSnap.exists()) {
+                vendorLocation = vendorSnap.data().location;
+                vendorCategory = vendorSnap.data().category;
+            }
+        } catch (error) {
+            console.error("Error fetching vendor for product:", docSnapshot.id, error);
+        }
+    }
 
     return {
-        id: doc.id,
+        id: docSnapshot.id,
         vendorId: data.vendorId,
-        category: vendorData?.category || data.category,
+        category: vendorCategory,
         price: data.price,
         title: data.title,
         description: data.description,
-        images: data.images || [],
+        images: data.images || ['https://picsum.photos/seed/default/600/400'],
         specificAttributes: data.specificAttributes,
         rating: data.rating || 0,
         reviewCount: data.reviewCount || 0,
-        location: vendorData?.location || data.location
+        location: vendorLocation,
     };
 }
 
 
 // Create
-export async function addProduct(productData: Omit<ProductInput, 'images'>): Promise<Product> {
-  const vendors = await getVendors();
-  const vendor = vendors.find(v => v.id === productData.vendorId);
-  if (!vendor) {
-    throw new Error('Vendor not found');
-  }
-
+export async function addProduct(productData: ProductInput): Promise<string> {
   const completeProductData = {
     ...productData,
     rating: 0,
@@ -44,22 +52,23 @@ export async function addProduct(productData: Omit<ProductInput, 'images'>): Pro
   };
 
   const docRef = await addDoc(collection(db, PRODUCTS_COLLECTION), completeProductData);
-  
-  const vendorSnapshot = await getDoc(doc(db, 'vendors', completeProductData.vendorId));
-  const vendorData = vendorSnapshot.data();
-
-  return {
-    id: docRef.id,
-    ...completeProductData,
-    category: vendorData?.category,
-    location: vendorData?.location
-  };
+  return docRef.id;
 }
 
 // Read
 export async function getProducts(): Promise<Product[]> {
-  const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
-  return Promise.all(querySnapshot.docs.map(productFromDoc));
+  try {
+    const querySnapshot = await getDocs(collection(db, PRODUCTS_COLLECTION));
+    if (querySnapshot.empty) {
+        console.log("No products found in Firestore.");
+        return [];
+    }
+    const products = await Promise.all(querySnapshot.docs.map(doc => productFromDoc(doc)));
+    return products;
+  } catch (error) {
+      console.error("Error fetching products:", error);
+      throw new Error("Failed to fetch products from Firestore.");
+  }
 }
 
 // Update
@@ -72,3 +81,5 @@ export async function updateProduct(id: string, productData: Partial<ProductInpu
 export async function deleteProduct(id: string): Promise<void> {
   await deleteDoc(doc(db, PRODUCTS_COLLECTION, id));
 }
+
+    
