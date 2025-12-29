@@ -19,7 +19,7 @@ export function ContactVendorButton({ vendor }: ContactVendorButtonProps) {
     };
 
     return (
-        <Button variant="outline" onClick={handleContact}>
+        <Button variant="secondary-outline" onClick={handleContact}>
             <MessageCircle className="mr-2 h-4 w-4" />
             Hubungi Vendor
         </Button>

@@ -10,7 +10,6 @@ import { useCart } from '@/context/cart-context';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import type { Product } from '@/lib/types';
-import { Input } from '@/components/ui/input';
 import {
   Dialog,
   DialogContent,
@@ -21,6 +20,7 @@ import {
   DialogClose,
 } from '@/components/ui/dialog';
 import { Calendar } from '@/components/ui/calendar';
+import { Input } from '@/components/ui/input';
 
 interface AddToCartButtonProps {
   product: Product;
@@ -69,10 +69,21 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
 
   return (
     <>
-      <Button onClick={handleAddToCartClick} className="w-full">
-        <ShoppingCart className="mr-2 h-4 w-4" />
-        Tambah ke Keranjang
-      </Button>
+      <div className="flex items-center gap-2">
+        <Input
+          id="quantity"
+          type="number"
+          min="1"
+          value={quantity}
+          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+          className="w-20 h-10 text-center"
+          aria-label="Quantity"
+        />
+        <Button onClick={handleAddToCartClick} className="flex-1">
+          <ShoppingCart className="mr-2 h-4 w-4" />
+          Tambah ke Keranjang
+        </Button>
+      </div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="sm:max-w-[425px]">
@@ -92,18 +103,6 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
               className="rounded-md border"
             />
           </div>
-           <div className="flex items-center gap-4">
-              <label htmlFor="quantity" className="text-sm font-medium">Jumlah:</label>
-              <Input
-                id="quantity"
-                type="number"
-                min="1"
-                value={quantity}
-                onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                className="w-20"
-                aria-label="Quantity"
-              />
-            </div>
           <DialogFooter>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
