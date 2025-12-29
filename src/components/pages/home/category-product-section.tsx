@@ -40,7 +40,7 @@ export async function CategoryProductSection({ category }: CategoryProductSectio
           <p className="text-muted-foreground">Lihat Rekomendasi dengan semua budget</p>
         </div>
         <Link href={`/products?category=${category.slug}`}>
-            <Button variant="link">
+            <Button variant="outline">
                 Lihat semua {category.name} <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
         </Link>
